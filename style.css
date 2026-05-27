@@ -1,11 +1,11 @@
 /* ==========================================
-   絶対に真っ白にならないシンプルデザイン（完全版）
+   文字化けを完全に回避する安全なスタイルシート
    ========================================== */
 body {
     margin: 0;
     padding: 0;
-    background-color: #ffffff; /* 完全な白背景 */
-    color: #111111; /* 深い墨黒の文字 */
+    background-color: #ffffff;
+    color: #111111;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", sans-serif;
     min-height: 100vh;
     display: flex;
@@ -13,7 +13,7 @@ body {
     align-items: center;
 }
 
-.ゲームコンテナ {
+.game-container {
     position: relative;
     width: 100vw;
     height: 100vh;
@@ -23,11 +23,7 @@ body {
     box-sizing: border-box;
 }
 
-/* 【最重要変更】
-   真っ白バグを100%防ぐため、初期状態はすべての画面を「普通に表示」させます。
-   active クラスがついていない画面だけを、安全に非表示にします。
-*/
-.シーン {
+.scene {
     display: none;
     width: 100%;
     height: 100%;
@@ -36,31 +32,30 @@ body {
     box-sizing: border-box;
 }
 
-/* このクラスがついている画面だけが最優先で表示されます */
-.シーン.アクティブ, .シーン.active {
+.scene.active {
     display: flex !important;
 }
 
 /* ==========================================
    1. タイトル画面
    ========================================== */
-#タイトル画面 {
+#title-screen {
     text-align: center;
     align-items: center;
     justify-content: center;
 }
-.メインタイトル {
+.main-title {
     font-size: 2.4rem;
     font-weight: 300;
     letter-spacing: 6px;
     margin: 0 0 10px 0;
 }
-.世界観説明 {
+.world-desc {
     font-size: 0.95rem;
     color: #666666;
     margin-bottom: 50px;
 }
-.スタート案内 {
+.start-guide {
     font-size: 1.05rem;
     cursor: pointer;
     border-bottom: 1px solid #111111;
@@ -71,23 +66,23 @@ body {
 /* ==========================================
    2. メインプレイ画面
    ========================================== */
-.ステータスエリア {
+.status-area {
     border-bottom: 1px solid #eeeeee;
     padding-bottom: 12px;
     width: 100%;
 }
-.状態テキスト {
+.status-text {
     font-size: 0.9rem;
     display: flex;
     justify-content: space-between;
     color: #111111;
 }
-.セルフケア宣言 {
+.self-care-label {
     color: #888888;
     font-size: 0.85rem;
 }
 
-.メインコンテンツ {
+.main-content {
     display: flex;
     gap: 35px;
     flex-grow: 1;
@@ -96,41 +91,40 @@ body {
     width: 100%;
 }
 
-/* 左側：カード選択エリア */
-.カードエリア {
+.card-area {
     width: 55%;
     display: flex;
     align-items: center;
 }
-.カードグリッド {
+.card-grid {
     display: none;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     width: 100%;
 }
-.カードグリッド.active {
+.card-grid.active {
     display: grid;
 }
-.カード {
+.card {
     cursor: pointer;
     background: transparent;
     border: none;
     transition: opacity 0.25s ease;
     opacity: 0.35;
 }
-.カード img {
+.card img {
     width: 100%;
     height: auto;
     display: block;
     object-fit: contain;
 }
-.カード:hover { opacity: 0.7; }
-.カード.selected {
+.card:hover { opacity: 0.7; }
+.card.selected {
     opacity: 1;
 }
 
 /* 右側：自由記述エリア */
-.自由記述エリア {
+.write-area {
     width: 45%;
     border-left: 1px solid #eeeeee;
     padding-left: 25px;
@@ -138,11 +132,11 @@ body {
     flex-direction: column;
     justify-content: space-between;
 }
-.エリア見出し {
+.area-title {
     font-size: 0.9rem;
     font-weight: bold;
 }
-.記述説明 {
+.area-desc {
     font-size: 0.8rem;
     color: #666666;
     margin: 4px 0 12px 0;
@@ -162,8 +156,8 @@ body {
     border-color: #111111;
 }
 
-/* 落書きキャンバス設定 */
-.キャンバス枠 {
+/* キャンバス */
+.canvas-wrap {
     margin-top: 15px;
     display: flex;
     flex-direction: column;
@@ -177,7 +171,7 @@ body {
     border: 1px solid #dddddd;
     cursor: crosshair;
 }
-.消去ボタン {
+.clear-btn {
     background: transparent;
     border: 1px solid #cccccc;
     color: #666666;
@@ -185,13 +179,13 @@ body {
     padding: 3px 10px;
     cursor: pointer;
 }
-.消去ボタン:hover {
+.clear-btn:hover {
     border-color: #111111;
     color: #111111;
 }
 
 /* 下部フッター */
-.メッセージエリア {
+.message-area {
     border-top: 1px solid #eeeeee;
     padding-top: 15px;
     display: flex;
@@ -199,20 +193,20 @@ body {
     align-items: center;
     width: 100%;
 }
-.メッセージテキスト {
+.message-text {
     width: 65%;
 }
-.メッセージタイトル {
+.message-title {
     font-size: 1.05rem;
     margin: 0 0 4px 0;
 }
-.メッセージ詳細 {
+.message-desc {
     font-size: 0.8rem;
     color: #666666;
     margin: 0;
     line-height: 1.4;
 }
-.次へボタン {
+.next-btn {
     background-color: #111111;
     color: #ffffff;
     border: none;
@@ -221,7 +215,7 @@ body {
     cursor: pointer;
     transition: opacity 0.2s;
 }
-.次へボタン:disabled {
+.next-btn:disabled {
     background-color: #cccccc;
     color: #ffffff;
     cursor: not-allowed;
@@ -230,30 +224,30 @@ body {
 /* ==========================================
    3. 最終結果画面
    ========================================= */
-#結果画面 {
+#result-screen {
     text-align: center;
     align-items: center;
     justify-content: flex-start;
     overflow-y: auto;
 }
-.結果タイトル {
+.result-title {
     font-size: 1.8rem;
     font-weight: 400;
     margin: 10px 0 5px 0;
 }
-.お守りメッセージ {
+.charm-message {
     font-size: 0.9rem;
     color: #666666;
     margin-bottom: 30px;
 }
-.一括表示エリア {
+.summary-area {
     width: 100%;
     display: flex;
     gap: 30px;
     text-align: left;
     margin-bottom: 35px;
 }
-.総括ブロック {
+.summary-block {
     width: 50%;
     background: #fafafa;
     padding: 20px;
@@ -262,48 +256,48 @@ body {
     max-height: 320px;
     overflow-y: auto;
 }
-.総括ブロック h3 {
+.summary-block h3 {
     font-size: 0.95rem;
     margin-top: 0;
     border-bottom: 1px solid #111111;
     padding-bottom: 8px;
 }
-.まとめアイテム {
+.summary-item {
     font-size: 0.8rem;
     margin-bottom: 12px;
     line-height: 1.4;
 }
-.まとめテキスト {
+.summary-text-wrap {
     font-size: 0.8rem;
     color: #333333;
     line-height: 1.6;
 }
-.まとめ行 {
+.summary-row {
     margin: 0 0 10px 0;
     border-bottom: 1px dashed #dddddd;
     padding-bottom: 6px;
 }
-.リトライボタン {
+.retry-btn {
     border: 1px solid #111111;
     padding: 12px 40px;
     font-size: 0.9rem;
     cursor: pointer;
     transition: background 0.2s;
 }
-.リトライボタン:hover {
+.retry-btn:hover {
     background: #111111;
     color: #ffffff;
 }
 
-/* スマホ対応 */
+/* レスポンシブ */
 @media (max-width: 800px) {
-    .メインコンテンツ { flex-direction: column; gap: 20px; overflow-y: auto; }
-    .カードエリア, .自由記述エリア { width: 100%; }
-    .自由記述エリア { border-left: none; border-top: 1px solid #eeeeee; padding-left: 0; padding-top: 15px; }
-    .カードグリッド.active { grid-template-columns: repeat(2, 1fr); }
-    .一括表示エリア { flex-direction: column; gap: 15px; }
-    .総括ブロック { width: 100%; }
-    .メッセージエリア { flex-direction: column; gap: 15px; align-items: flex-start; }
-    .メッセージテキスト { width: 100%; }
-    .次へボタン { width: 100%; text-align: center; }
+    .main-content { flex-direction: column; gap: 20px; overflow-y: auto; }
+    .card-area, .write-area { width: 100%; }
+    .write-area { border-left: none; border-top: 1px solid #eeeeee; padding-left: 0; padding-top: 15px; }
+    .card-grid.active { grid-template-columns: repeat(2, 1fr); }
+    .summary-area { flex-direction: column; gap: 15px; }
+    .summary-block { width: 100%; }
+    .message-area { flex-direction: column; gap: 15px; align-items: flex-start; }
+    .message-text { width: 100%; }
+    .next-btn { width: 100%; text-align: center; }
 }
