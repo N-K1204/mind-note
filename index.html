@@ -3,74 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAME STYLE SELECT PANEL</title>
+    <title>STORY SELECTOR - SPECIAL EDITION</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="bg-effects"></div>
+    <div class="game-bg">
+        <div class="scanlines"></div>
+        <div class="grid-lines"></div>
+    </div>
 
-    <div class="game-container">
-        <header class="game-header">
-            <h1 class="game-title">STATUS SELECT</h1>
-            <p class="game-subtitle">現在の状態を選択してください</p>
+    <div class="main-interface">
+        
+        <header class="ui-header">
+            <div class="logo-area">
+                <span class="system-tag">SYSTEM v2.6</span>
+                <h1 class="main-logo">STORY CHOOSE</h1>
+            </div>
+            
+            <div class="route-selector">
+                <button class="route-btn active" id="btn-day" onclick="changeRoute('day')">
+                    <span class="mode-num">01</span> DAY SIDE (通常)
+                </button>
+                <button class="route-btn" id="btn-night" onclick="changeRoute('night')">
+                    <span class="mode-num">02</span> NIGHT SIDE (不調)
+                </button>
+            </div>
         </header>
 
-        <div class="select-grid">
+        <main class="panel-stage">
             
-            <div class="game-card" data-color="yellow" onclick="selectCard(this)">
-                <div class="card-glow"></div>
-                <div class="card-inner">
-                    <img src="image6.png" alt="といれにいきたい">
+            <div id="grid-day" class="panel-grid active">
+                <div class="panel-slot" onclick="panelSelect(this, 'image0', 'DAY ROUTE: 01', 'いつもの朝、ここから全ての物語がスタートする。')">
+                    <div class="slot-frame"><img src="image0.png" alt="DAY 01"></div>
+                </div>
+                <div class="panel-slot" onclick="panelSelect(this, 'image1', 'DAY ROUTE: 02', '少しずつ街が動き出す。順調な滑り出し。')">
+                    <div class="slot-frame"><img src="image1.png" alt="DAY 02"></div>
+                </div>
+                <div class="panel-slot" onclick="panelSelect(this, 'image2', 'DAY ROUTE: 03', '順調に進んでいるように見えたが、小さな変化が…？')">
+                    <div class="slot-frame"><img src="image2.png" alt="DAY 03"></div>
+                </div>
+                <div class="panel-slot" onclick="panelSelect(this, 'image3', 'DAY ROUTE: 04', '折り返し地点。まだエネルギーは十分残っている。')">
+                    <div class="slot-frame"><img src="image3.png" alt="DAY 04"></div>
+                </div>
+                <div class="panel-slot" onclick="panelSelect(this, 'image4', 'DAY ROUTE: 05', '夕方の兆し。終わりが見えてきた時間帯。')">
+                    <div class="slot-frame"><img src="image4.png" alt="DAY 05"></div>
+                </div>
+                <div class="panel-slot" onclick="panelSelect(this, 'image5', 'DAY ROUTE: 06', 'DAY SIDE ラストステージ。無事に次のステップへ移行。')">
+                    <div class="slot-frame"><img src="image5.png" alt="DAY 06"></div>
                 </div>
             </div>
 
-            <div class="game-card" data-color="green" onclick="selectCard(this)">
-                <div class="card-glow"></div>
-                <div class="card-inner">
-                    <img src="image7.png" alt="おなかいたい">
+            <div id="grid-night" class="panel-grid">
+                <div class="panel-slot type-yellow" onclick="panelSelect(this, 'image6', 'CONDITION: トイレにいきたい', '危険度：★☆☆ / 最優先で処理すべき緊急の生理欲求が発生中。')">
+                    <div class="slot-frame"><img src="image6.png" alt="トイレにいきたい"></div>
+                </div>
+                <div class="panel-slot type-magenta" onclick="panelSelect(this, 'image7', 'CONDITION: おなかいたい', '危険度：★★★ / 体力の継続的な消耗を確認。ただちに休息が必要。')">
+                    <div class="slot-frame"><img src="image7.png" alt="おなかいたい"></div>
+                </div>
+                <div class="panel-slot type-blue" onclick="panelSelect(this, 'image8', 'CONDITION: あたまいたい', '危険度：★★☆ / 思考力低下のデバフが発生。静かな環境を求めている。')">
+                    <div class="slot-frame"><img src="image8.png" alt="あたまいたい"></div>
+                </div>
+                <div class="panel-slot type-orange" onclick="panelSelect(this, 'image9', 'CONDITION: おなかすいた', '危険度：★☆☆ / 燃料切れ。エネルギーの補給（ご飯）を強く求めている状態。')">
+                    <div class="slot-frame"><img src="image9.png" alt="おなかすいた"></div>
+                </div>
+                <div class="panel-slot type-purple" onclick="panelSelect(this, 'image10', 'CONDITION: ねれない', '危険度：★★☆ / 精神疲労が蓄積しているにもかかわらず、リブートに失敗中。')">
+                    <div class="slot-frame"><img src="image10.png" alt="ねれない"></div>
+                </div>
+                <div class="panel-slot type-red" onclick="panelSelect(this, 'CONDITION: おしごといやだ', '危険度：MAX / メンタルゲージが限界。今日のミッションの中止を提案します。')">
+                    <div class="slot-frame"><img src="image11.png" alt="おしごといやだ"></div>
                 </div>
             </div>
 
-            <div class="game-card" data-color="blue" onclick="selectCard(this)">
-                <div class="card-glow"></div>
-                <div class="card-inner">
-                    <img src="image8.png" alt="あたまいたい">
+        </main>
+
+        <footer class="status-window">
+            <div class="window-border"></div>
+            <div class="info-layout">
+                <div class="preview-box">
+                    <div id="preview-img-placeholder" class="placeholder-text">NO DATA</div>
+                    <img id="preview-img" src="" alt="Preview" style="display: none;">
+                </div>
+                <div class="text-box">
+                    <div id="status-title" class="status-title">SELECT A CARD</div>
+                    <div id="status-desc" class="status-desc">カードを選択すると、ここに詳細ステータスがロードされます。</div>
                 </div>
             </div>
+        </footer>
 
-            <div class="game-card" data-color="orange" onclick="selectCard(this)">
-                <div class="card-glow"></div>
-                <div class="card-inner">
-                    <img src="image9.png" alt="おなかすいた">
-                </div>
-            </div>
-
-            <div class="game-card" data-color="purple" onclick="selectCard(this)">
-                <div class="card-glow"></div>
-                <div class="card-inner">
-                    <img src="image10.png" alt="ねれない">
-                </div>
-            </div>
-
-            <div class="game-card" data-color="red" onclick="selectCard(this)">
-                <div class="card-glow"></div>
-                <div class="card-inner">
-                    <img src="image11.png" alt="おしごといやだ">
-                </div>
-            </div>
-
-        </div>
     </div>
 
     <script>
-        function selectCard(element) {
-            // すでに選択されている他のカードの選択状態を解除
-            document.querySelectorAll('.game-card').forEach(card => {
-                if (card !== element) card.classList.remove('active');
-            });
-            // クリックされたカードの選択状態を切り替え（トグル）
-            element.classList.toggle('active');
+        // 昼・夜ルート切り替え
+        function changeRoute(route) {
+            document.querySelectorAll('.route-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.panel-grid').forEach(grid => grid.classList.remove('active'));
+            
+            if(route === 'day') {
+                document.getElementById('btn-day').classList.add('active');
+                document.getElementById('grid-day').classList.add('active');
+            } else {
+                document.getElementById('btn-night').classList.add('active');
+                document.getElementById('grid-night').classList.add('active');
+            }
+            // 切り替え時に下部ウィンドウをリセット
+            resetWindow();
+        }
+
+        // カード選択時の処理
+        function panelSelect(element, imgName, title, desc) {
+            // 他の選択を解除
+            document.querySelectorAll('.panel-slot').forEach(slot => slot.classList.remove('selected'));
+            // 選択エフェクト付与
+            element.classList.add('selected');
+
+            // 下部ステータスウィンドウの書き換え
+            const previewImg = document.getElementById('preview-img');
+            const placeholder = document.getElementById('preview-img-placeholder');
+            
+            placeholder.style.display = 'none';
+            previewImg.style.display = 'block';
+            previewImg.src = imgName + '.png'; // 拡張子を補完
+
+            document.getElementById('status-title').innerText = title;
+            document.getElementById('status-desc').innerText = desc;
+        }
+
+        function resetWindow() {
+            document.querySelectorAll('.panel-slot').forEach(slot => slot.classList.remove('selected'));
+            document.getElementById('preview-img').style.display = 'none';
+            document.getElementById('preview-img-placeholder').style.display = 'flex';
+            document.getElementById('status-title').innerText = 'SELECT A CARD';
+            document.getElementById('status-desc').innerText = 'カードを選択すると、ここに詳細ステータスがロードされます。';
         }
     </script>
 
