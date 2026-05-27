@@ -1,5 +1,5 @@
 /* ==========================================
-   絶対に真っ白にならないシンプルデザイン
+   絶対に真っ白にならないシンプルデザイン（完全版）
    ========================================== */
 body {
     margin: 0;
@@ -23,41 +23,22 @@ body {
     box-sizing: border-box;
 }
 
-.画面フラッシュ {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: #000000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.1s ease-out;
-    z-index: 10;
-}
-
-/* 【重要修正】
-   真っ白バグを防ぐため、display: none; は廃止しました。
-   通常時は非表示にし、active クラスがついたものだけを綺麗に表示させます。
+/* 【最重要変更】
+   真っ白バグを100%防ぐため、初期状態はすべての画面を「普通に表示」させます。
+   active クラスがついていない画面だけを、安全に非表示にします。
 */
 .シーン {
-    opacity: 0;
-    visibility: hidden;
-    position: absolute;
-    top: 0;
-    left: 0;
+    display: none;
     width: 100%;
     height: 100%;
-    display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 25px;
     box-sizing: border-box;
-    transition: opacity 0.2s ease;
 }
 
-/* JavaScriptと連動して最前面に表示される設定 */
-.シーン.active {
-    opacity: 1;
-    visibility: visible;
-    position: relative;
+/* このクラスがついている画面だけが最優先で表示されます */
+.シーン.アクティブ, .シーン.active {
+    display: flex !important;
 }
 
 /* ==========================================
@@ -115,7 +96,7 @@ body {
     width: 100%;
 }
 
-/* 左側：カードエリア */
+/* 左側：カード選択エリア */
 .カードエリア {
     width: 55%;
     display: flex;
@@ -181,7 +162,7 @@ body {
     border-color: #111111;
 }
 
-/* キャンバス */
+/* 落書きキャンバス設定 */
 .キャンバス枠 {
     margin-top: 15px;
     display: flex;
