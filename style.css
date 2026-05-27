@@ -1,10 +1,10 @@
 /* ==========================================
-   レトロ近未来ゲーム筐体風 ベーススタイル
+   RPG風サイバーテキストアドベンチャー 共通設定
    ========================================== */
 body {
     margin: 0;
     padding: 0;
-    background-color: #020406; /* 部屋の明かりを消したような漆黒 */
+    background-color: #010305; /* コマンドラインの背景のような完全な黒 */
     color: #e2e8f0;
     font-family: 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
     min-height: 100vh;
@@ -12,26 +12,31 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
-/* ゲーム全体の画面比率を固定するフレーム */
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+/* ゲーム全体の画面解像度アスペクト比を固定 */
 .ゲーム画面 {
     position: relative;
     width: 100vw;
     height: 100vh;
-    max-width: 1024px;
-    max-height: 768px;
-    background-color: #090d16;
-    border: 4px solid #1e293b;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    max-width: 1100px;
+    max-height: 800px;
+    background-color: #070b12;
+    border: 3px solid #334155;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
     overflow: hidden;
 }
 
-/* 特殊視覚エフェクト：ブラウン管やモニターの網目 */
+/* レトロテレビ風画面エフェクト */
 .走査線 {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
     background-size: 100% 4px;
     z-index: 99;
     pointer-events: none;
@@ -46,13 +51,12 @@ body {
     transition: opacity 0.1s ease-out;
 }
 
-/* シーン管理（アクティブな画面だけを表示） */
+/* シーンマネージャー */
 .シーン {
     display: none;
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    padding: 30px;
-    box-sizing: border-box;
+    padding: 25px;
 }
 .シーン.active {
     display: flex;
@@ -61,138 +65,145 @@ body {
 }
 
 /* ==========================================
-   シーン1：タイトル画面のデザイン
+   1. タイトル画面デザイン
    ========================================== */
 #タイトル画面 {
     justify-content: center;
     align-items: center;
-    background: radial-gradient(circle at 50% 50%, #131c31 0%, #050810 80%);
+    background: radial-gradient(circle at 50% 50%, #0f172a 0%, #020408 80%);
 }
 .タイトルロゴ {
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 50px;
 }
 .サブタイトル {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #00e5ff;
-    letter-spacing: 6px;
+    letter-spacing: 5px;
     font-weight: bold;
 }
 .メインタイトル {
-    font-size: 3.5rem;
+    font-size: 3.2rem;
     font-weight: 900;
     color: #ffffff;
-    margin: 10px 0 0 0;
-    letter-spacing: 8px;
-    line-height: 1.2;
-    text-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+    margin: 12px 0 0 0;
+    letter-spacing: 6px;
+    line-height: 1.25;
+    text-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
 }
 .スタート案内 {
-    font-size: 1.2rem;
-    color: #94a3b8;
+    font-size: 1.1rem;
+    color: #64748b;
     cursor: pointer;
-    animation: 文字点滅 1.5s infinite;
+    animation: 点滅 1.8s infinite;
 }
 
 /* ==========================================
-   シーン2：メインプレイ画面（ステータス＆グリッド）
+   2. メインプレイ画面（上部ステータス）
    ========================================== */
 .ステータスエリア {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255, 255, 255, 0.02);
-    padding: 12px 20px;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.01);
+    padding: 14px 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
+.ステータス詳細 {
+    display: flex;
+    gap: 30px;
+}
+.ステータス項目 {
+    font-size: 0.9rem;
+}
+.ラベル {
+    color: #64748b;
+    margin-right: 5px;
+}
+/* ステータス属性カラー */
+.ステータス通常 { color: #00e5ff; font-weight: bold; }
+.ステータス警告 { color: #ff9100; font-weight: bold; }
+.ステータス危険 { color: #ff1744; font-weight: bold; }
+
 .ゲージ枠 {
     display: flex;
     align-items: center;
     gap: 15px;
-    flex-grow: 1;
-    max-width: 600px;
+    width: 40%;
 }
 .ゲージラベル {
     font-size: 0.8rem;
+    color: #64748b;
     font-weight: bold;
-    color: #94a3b8;
 }
 .ゲージ本体 {
     flex-grow: 1;
-    height: 14px;
+    height: 12px;
     background: #1e293b;
-    border-radius: 10px;
+    border-radius: 6px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .ゲージ中身 {
     height: 100%;
     background-color: #00e5ff;
-    box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+    box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
     transition: width 0.4s ease, background-color 0.4s ease;
 }
-.ルートバッジ {
-    background: #00e5ff;
-    color: #06090e;
-    font-size: 0.8rem;
-    font-weight: bold;
-    padding: 6px 16px;
-    border-radius: 4px;
-    box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
-}
 
-/* カードステージレイアウト */
-.ステージ {
+/* ==========================================
+   ゲームメインステージ（カード ＆ ログの横並び）
+   ========================================== */
+.ゲームメインステージ {
     flex-grow: 1;
     display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    height: 60%;
+}
+
+.カードエリア {
+    flex-grow: 1;
+    width: 65%;
+    display: flex;
     align-items: center;
-    justify-content: center;
 }
 .カードグリッド {
     display: none;
     grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    gap: 18px;
     width: 100%;
 }
 .カードグリッド.active {
     display: grid;
-    animation: モニター起動 0.3s ease-out forwards;
+    animation: 開幕 0.35s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
 }
 
-/* カードスロット（余計な元の茶色い外枠は100%完全に排除） */
+/* カードデザイン（枠線は完全排除済み） */
 .カードスロット {
     position: relative;
     cursor: pointer;
     transition: transform 0.2s ease;
 }
 .カード外枠 {
-    border-radius: 12px;
+    border-radius: 10px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.01);
-    border: 2px solid rgba(255, 255, 255, 0.08);
-    filter: brightness(0.5); /* 未選択カードは暗くしてディミング表現 */
-    transition: all 0.2s ease;
+    border: 2px solid rgba(255, 255, 255, 0.06);
+    filter: brightness(0.4) grayscale(0.2);
+    transition: all 0.25s ease;
 }
 .カード外枠 img {
     width: 100%; height: auto; display: block; object-fit: contain;
 }
 
-/* ホバーおよび選択時のネオンライティング演出 */
-.カードスロット:hover {
-    transform: translateY(-5px);
-}
-.カードスロット:hover .カード外枠 {
-    filter: brightness(0.8);
-    border-color: rgba(255, 255, 255, 0.4);
-}
+/* カードの状態変化 */
+.カードスロット:hover { transform: translateY(-4px); }
+.カードスロット:hover .カード外枠 { filter: brightness(0.75) grayscale(0); border-color: rgba(255, 255, 255, 0.3); }
+.カードスロット.selected .カード外枠 { filter: brightness(1.1) grayscale(0); background: rgba(255, 255, 255, 0.04); }
 
-.カードスロット.selected .カード外枠 {
-    filter: brightness(1.1);
-    background: rgba(255, 255, 255, 0.05);
-}
-
-/* ルートや状態に合わせたゲーム用ネオン枠のカラー定義 */
+/* 各属性ネオンカラー発光 */
 .カードスロット.selected .カード外枠 { box-shadow: 0 0 20px #00e5ff; border-color: #00e5ff; }
 .黄色発光.selected .カード外枠 { box-shadow: 0 0 20px #ffea00; border-color: #ffea00; }
 .紫発光.selected .カード外枠   { box-shadow: 0 0 20px #ff007f; border-color: #ff007f; }
@@ -202,14 +213,47 @@ body {
 .赤発光.selected .カード外枠   { box-shadow: 0 0 20px #ff1744; border-color: #ff1744; }
 
 /* ==========================================
-   下部：アドベンチャー風 メッセージウィンドウ
+   右側：RPGバトルログ風ウィンドウ
+   ========================================== */
+.ログウィンドウ {
+    width: 35%;
+    background: rgba(10, 16, 26, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+.ログタイトル {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+.ログ中身 {
+    flex-grow: 1;
+    overflow-y: auto;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+/* ログ履歴専用配色 */
+.ログ行通常 { color: #cbd5e1; }
+.ログ行システム { color: #00e5ff; }
+.ログ行ダメージ { color: #ff9100; }
+.ログ行警告 { color: #ff1744; font-weight: bold; }
+
+/* ==========================================
+   下部：テキストウィンドウ
    ========================================== */
 .メッセージウィンドウ {
     position: relative;
-    background: rgba(6, 10, 18, 0.9);
-    border: 1px solid rgba(0, 229, 255, 0.2);
-    border-radius: 8px;
-    padding: 20px;
+    background: rgba(4, 7, 12, 0.95);
+    border: 1px solid rgba(0, 229, 255, 0.18);
+    border-radius: 6px;
+    padding: 18px;
 }
 .ウィンドウ角 {
     position: absolute;
@@ -219,89 +263,77 @@ body {
 .情報配置 {
     display: flex;
     align-items: center;
-    gap: 25px;
+    gap: 20px;
 }
 .ミニプレビュー {
-    width: 90px;
-    height: 55px;
+    width: 80px;
+    height: 50px;
     background: rgba(255, 255, 255, 0.02);
-    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border: 1px dashed rgba(255, 255, 255, 0.12);
     border-radius: 4px;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    flex-shrink: 0;
 }
 .未選択文字 {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: #475569;
-    font-weight: bold;
 }
-.ミニプレビュー img {
-    height: 100%; width: auto; object-fit: contain;
-}
-.イベント名 {
-    font-size: 1.15rem;
-    font-weight: bold;
-    color: #ffffff;
-    margin-bottom: 5px;
-}
-.イベント詳細 {
-    font-size: 0.85rem;
-    color: #94a3b8;
-    line-height: 1.4;
-}
+.ミニプレビュー img { height: 100%; width: auto; object-fit: contain; }
+.イベント名 { font-size: 1.1rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
+.イベント詳細 { font-size: 0.8rem; color: #94a3b8; line-height: 1.4; }
 
 /* ==========================================
-   シーン3：ゲームオーバー画面のデザイン
+   3. 結果・エンディング画面
    ========================================== */
-#ゲームオーバー画面 {
+#結果画面 {
     justify-content: center;
     align-items: center;
-    background: #000000;
+    background: #030508;
+    text-align: center;
 }
-.警告タイトル {
-    font-size: 3rem;
-    color: #ff1744;
-    letter-spacing: 10px;
-    text-shadow: 0 0 20px rgba(255, 23, 68, 0.6);
-    margin: 0;
+.結果タイトル {
+    font-size: 2.6rem;
+    letter-spacing: 6px;
+    margin: 0 0 15px 0;
 }
-.警告詳細 {
-    color: #64748b;
-    margin: 15px 0 40px 0;
+.結果詳細 {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    max-width: 600px;
+    line-height: 1.6;
+    margin-bottom: 40px;
 }
 .リトライ案内 {
-    border: 1px solid #ff1744;
-    color: #ff1744;
-    padding: 12px 30px;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    padding: 12px 28px;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
 }
 .リトライ案内:hover {
-    background: #ff1744;
-    color: #000000;
-    box-shadow: 0 0 15px #ff1744;
+    background: #ffffff;
+    color: #030508;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
-/* ==========================================
-   アニメーション定義
-   ========================================== */
-@keyframes 文字点滅 {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
-}
-@keyframes モニター起動 {
+/* アニメーション */
+@keyframes 点滅 { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+@keyframes 開幕 {
     0% { transform: scaleY(0.01) scaleX(0); opacity: 0; }
     50% { transform: scaleY(0.01) scaleX(1); opacity: 1; }
     100% { transform: scaleY(1) scaleX(1); opacity: 1; }
 }
 
-/* レスポンシブ設計（スマホ表示の最適化） */
-@media (max-width: 700px) {
-    .カードグリッド.active { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    .メインタイトル { font-size: 2.5rem; }
+/* スマホ等での閲覧最適化 */
+@media (max-width: 800px) {
+    .ゲームメインステージ { flex-direction: column; }
+    .カードエリア { width: 100%; }
+    .ログウィンドウ { width: 100%; height: 120px; }
+    .カードグリッド.active { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .メインタイトル { font-size: 2.2rem; }
     .ミニプレビュー { display: none; }
-    .シーン { padding: 15px; }
 }
