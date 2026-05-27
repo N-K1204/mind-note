@@ -1,21 +1,27 @@
 /* ==========================================
-   コンソール・ゲーム機風ベースデザイン設定
+   アーケード・ゲーム機風ベース UI スタイル
    ========================================== */
 body {
     margin: 0;
     padding: 0;
-    background-color: #06090e; /* 超ダークなコックピットカラー */
+    background-color: #06090e; /* コックピットの内側を思わせる超暗色 */
     color: #e2e8f0;
-    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
     position: relative;
+    box-sizing: border-box;
 }
 
-/* ゲーム背景（グリッド＆スキャンライン演出） */
+/* 画面全体の全画面リセット設定 */
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+/* 背景演出：サイバーグリッド ＆ モニタースキャンライン */
 .game-bg {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -24,144 +30,159 @@ body {
 }
 .grid-lines {
     width: 100%; height: 100%;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
     background-size: 50px 50px;
 }
 .scanlines {
     position: absolute;
     width: 100%; height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
     background-size: 100% 4px, 6px 100%;
 }
 
-/* メインレイアウト */
+/* メインフレームレイアウト */
 .main-interface {
     position: relative;
     z-index: 2;
     width: 100vw;
     height: 100vh;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 30px;
+    padding: 35px;
 }
 
 /* ==========================================
-   ヘッダー ＆ ルート選択タブボタン
+   UI ヘッダー ＆ ルート変更コマンド
    ========================================== */
 .ui-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 18px;
 }
 .system-tag {
     font-size: 0.75rem;
-    color: #4fc3f7;
-    letter-spacing: 2px;
+    color: #00e5ff;
+    letter-spacing: 3px;
+    font-weight: bold;
 }
 .main-logo {
-    margin: 5px 0 0 0;
-    font-size: 1.8rem;
+    margin: 6px 0 0 0;
+    font-size: 2rem;
     font-weight: 900;
-    letter-spacing: 4px;
+    letter-spacing: 5px;
     color: #ffffff;
-    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    text-shadow: 0 0 12px rgba(255,255,255,0.25);
 }
 .route-selector {
     display: flex;
     gap: 15px;
 }
 .route-btn {
-    background: #121824;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #8a99ad;
-    padding: 12px 24px;
+    background: #111622;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #798da3;
+    padding: 14px 28px;
     font-size: 0.9rem;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    border-radius: 6px;
+    transition: all 0.25s ease;
 }
 .mode-num {
-    color: #4fc3f7;
-    margin-right: 5px;
+    color: #00e5ff;
+    margin-right: 6px;
+    font-style: italic;
 }
+.route-btn:hover {
+    border-color: rgba(0, 229, 255, 0.5);
+    color: #ffffff;
+}
+/* アクティブ時のゲームネオン発光 */
 .route-btn.active {
     background: #00e5ff;
     color: #06090e;
     border-color: #00e5ff;
-    box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.45);
 }
 .route-btn.active .mode-num {
     color: #06090e;
 }
 
 /* ==========================================
-   ステージ：カード選択エリア（グリッド）
+   ステージ：カード選択メイングリッド
    ========================================== */
 .panel-stage {
     flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px 0;
+    padding: 25px 0;
 }
 .panel-grid {
     display: none;
     grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    gap: 30px;
     width: 100%;
-    max-width: 1000px;
+    max-width: 1050px;
 }
+/* ルート切り替え時に瞬時にモニターがONになるエフェクト */
 .panel-grid.active {
     display: grid;
-    animation: screenOn 0.3s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    animation: monitorOn 0.35s cubic-bezier(0.08, 0.82, 0.17, 1) forwards;
 }
 
-/* カード単体（ゲームのスロット枠、不要な元の茶枠などは一切なし） */
+/* カードスロット（余計な元のデザインの茶色枠はCSS側で100%排除しています） */
 .panel-slot {
     position: relative;
+    background: transparent;
     cursor: pointer;
-    border-radius: 12px;
-    transition: transform 0.2s ease;
+    border-radius: 14px;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .slot-frame {
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.02);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    filter: brightness(0.5); /* 選択していない時は少し暗くゲームの待機画面風に */
-    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.015);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    filter: brightness(0.45) grayscale(0.2); /* 非選択時はゲームの待機画面のようにディミング（明度下げ） */
+    transition: all 0.25s ease;
 }
 .slot-frame img {
-    width: 100%; height: auto; display: block; object-fit: contain;
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
 }
 
-/* ホバー＆セレクト時のアーケード筐体風ネオンエフェクト */
+/* ホバー（選択候補フォーカス）時のエフェクト */
 .panel-slot:hover {
-    transform: translateY(-5px) scale(1.02);
+    transform: translateY(-6px) scale(1.02);
 }
 .panel-slot:hover .slot-frame {
-    filter: brightness(0.8);
-    border-color: rgba(255, 255, 255, 0.4);
+    filter: brightness(0.8) grayscale(0);
+    border-color: rgba(255, 255, 255, 0.35);
 }
 
-/* 決定・選択状態のネオン発光 */
+/* ==========================================
+   決定・選択状態（Selected）のグローアニメーション
+   ========================================== */
 .panel-slot.selected {
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 .panel-slot.selected .slot-frame {
-    filter: brightness(1.1);
-    background: rgba(255, 255, 255, 0.08);
+    filter: brightness(1.1) grayscale(0);
+    background: rgba(255, 255, 255, 0.06);
 }
 
-/* 昼用（デフォルト）の発光 */
-.panel-slot.selected .slot-frame { box-shadow: 0 0 25px #00e5ff; border-color: #00e5ff; }
-/* 夜用個別（カラータイプ別発光） */
+/* 昼ルート選択時の共通発光カラー */
+.type-day.selected .slot-frame     { box-shadow: 0 0 25px #00e5ff; border-color: #00e5ff; }
+
+/* 夜ルート選択時：状態に応じた個別ネオンの割り当て */
 .type-yellow.selected .slot-frame  { box-shadow: 0 0 25px #ffea00; border-color: #ffea00; }
 .type-magenta.selected .slot-frame { box-shadow: 0 0 25px #ff007f; border-color: #ff007f; }
 .type-blue.selected .slot-frame    { box-shadow: 0 0 25px #2979ff; border-color: #2979ff; }
@@ -170,72 +191,96 @@ body {
 .type-red.selected .slot-frame     { box-shadow: 0 0 25px #ff1744; border-color: #ff1744; }
 
 /* ==========================================
-   下部：ステータス情報ウィンドウ
+   下部：ステータス詳細情報コンソール
    ========================================== */
 .status-window {
     position: relative;
-    background: rgba(10, 15, 26, 0.85);
-    border: 1px solid rgba(0, 229, 255, 0.2);
-    border-radius: 8px;
-    padding: 20px;
-    box-sizing: border-box;
+    background: rgba(9, 14, 23, 0.88);
+    border: 1px solid rgba(0, 229, 255, 0.15);
+    border-radius: 10px;
+    padding: 22px;
 }
+/* 左上のゲームUI風エッジ装飾 */
 .window-border {
     position: absolute;
-    top: 0; left: 0; width: 10px; height: 10px;
-    border-top: 3px solid #00e5ff; border-left: 3px solid #00e5ff;
+    top: -1px; left: -1px; width: 12px; height: 12px;
+    border-top: 3px solid #00e5ff;
+    border-left: 3px solid #00e5ff;
 }
 .info-layout {
     display: flex;
     align-items: center;
-    gap: 25px;
+    gap: 30px;
 }
+/* ミニプレビューウィンドウ */
 .preview-box {
-    width: 100px;
-    height: 60px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px dashed rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
+    width: 110px;
+    height: 65px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    flex-shrink: 0;
 }
 .placeholder-text {
     font-size: 0.75rem;
-    color: #4a5d78;
-    font-weight: bold;
+    color: #43556e;
+    font-weight: 900;
+    letter-spacing: 1px;
 }
 .preview-box img {
-    height: 100%; width: auto; object-fit: contain;
+    height: 100%;
+    width: auto;
+    object-fit: contain;
 }
+/* テキストエリア */
 .text-box {
     flex-grow: 1;
 }
 .status-title {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: bold;
     color: #ffffff;
     margin-bottom: 6px;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
 }
 .status-desc {
     font-size: 0.9rem;
-    color: #94a3b8;
-    line-height: 1.4;
+    color: #8fa0b5;
+    line-height: 1.45;
 }
 
-/* モニター起動時のようなアニメーション */
-@keyframes screenOn {
+/* ==========================================
+   画面展開アニメーション ＆ レスポンシブ
+   ========================================== */
+@keyframes monitorOn {
     0% { transform: scaleY(0.005) scaleX(0); opacity: 0; }
-    50% { transform: scaleY(0.005) scaleX(1); opacity: 1; }
+    45% { transform: scaleY(0.005) scaleX(1); opacity: 1; }
     100% { transform: scaleY(1) scaleX(1); opacity: 1; }
 }
 
-/* 横幅が狭い端末でのレイアウト（レスポンシブ） */
+/* 画面幅が狭いタブレット・スマホ環境向けの最適化 */
 @media (max-width: 850px) {
-    .panel-grid.active { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    .main-interface { padding: 15px; }
-    .main-logo { font-size: 1.4rem; }
-    .route-btn { padding: 10px 16px; font-size: 0.8rem; }
+    .panel-grid.active {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+    .main-interface { padding: 18px; }
+    .main-logo { font-size: 1.5rem; }
+    .route-btn { padding: 10px 18px; font-size: 0.8rem; }
+    .info-layout { gap: 15px; }
+    .preview-box { display: none; } /* 省スペース化のためスマホではプレビュー枠を非表示 */
+}
+
+@media (max-width: 550px) {
+    .panel-grid.active {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .ui-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+    .route-selector { width: 100%; }
+    .route-btn { flex-grow: 1; text-align: center; }
 }
