@@ -3,127 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ココロノクエスト - 精神深化型RPG</title>
+    <title>ココロノクエスト - ミニマルエディション</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="ゲーム画面">
-        <div class="走査線"></div>
+    <div class="ゲームコンテナ">
         <div class="画面フラッシュ" id="flash-effect"></div>
 
         <div id="タイトル画面" class="シーン アクティブ">
-            <div class="タイトルロゴ">
-                <div class="サブタイトル">ココロ進行型テキストアールピージー</div>
-                <h1 class="メインタイトル">ココロノ<br>クエストⅡ</h1>
-            </div>
-            <div class="スタート案内" onclick="ゲーム開始()">
-                運命の選択を始める（画面をタッチ）
-            </div>
+            <h1 class="メインタイトル">ココロノクエスト</h1>
+            <p class="スタート案内" onclick="ゲーム開始()">選択を始める →</p>
         </div>
 
         <div id="プレイ画面" class="シーン">
             
             <header class="ステータスエリア">
-                <div class="ステータス詳細">
-                    <div class="ステータス項目"><span class="ラベル">現在の章:</span> <span id="current-chapter">第1章：目覚め</span></div>
-                    <div class="ステータス項目"><span class="ラベル">ココロの属性:</span> <span id="player-status" class="ステータス通常">通常状態</span></div>
+                <div class="状態テキスト">
+                    <span id="current-chapter">第1章：静かなる目覚め</span>
+                    <span id="player-status" class="ステータス通常">通常状態</span>
                 </div>
-                <div class="ゲージ枠">
-                    <span class="ゲージラベル">精神耐久値</span>
-                    <div class="ゲージ本体"><div id="mental-bar" class="ゲージ中身" style="width: 100%;"></div></div>
+                <div class="ゲージ本体">
+                    <div id="mental-bar" class="ゲージ中身" style="width: 100%;"></div>
                 </div>
             </header>
 
-            <div class="ゲームメインステージ">
+            <div class="メインコンテンツ">
                 
                 <main class="カードエリア">
-                    
                     <div id="昼のカード" class="カードグリッド アクティブ">
-                        <div class="カードスロット" onclick="選択イベント(this, 'image0', 'いつも通りの朝', '清々しい光が差し込む。今日も無事に一日が始まった。', 0, '平穏', 1)">
-                            <div class="カード外枠"><img src="image0.png" alt="朝"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image0', 'いつも通りの朝', '清々しい光が差し込む。今日も無事に一日が始まった。', 0, '平穏')">
+                            <img src="image0.png" alt="朝">
                         </div>
-                        <div class="カードスロット" onclick="選択イベント(this, 'image1', '動き出す街', '人々が行き交う中を進む。周囲との調和を感じている。', 0, '調和', 2)">
-                            <div class="カード外枠"><img src="image1.png" alt="昼"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image1', '動き出す街', '人々が行き交う中を進む。周囲との調和を感じている。', 0, '調和')">
+                            <img src="image1.png" alt="昼">
                         </div>
-                        <div class="カードスロット" onclick="選択イベント(this, 'image2', '小さな違和感', 'ざわつきを覚える。ココロの防壁にわずかなノイズ。', 10, '警戒', 3)">
-                            <div class="カード外枠"><img src="image2.png" alt="夕"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image2', '小さな違和感', 'ざわつきを覚える。ココロの防壁にわずかなノイズ。', 10, '警戒')">
+                            <img src="image2.png" alt="夕">
                         </div>
-                        <div class="カードスロット" onclick="選択イベント(this, 'image3', '分岐点', '進むべき道を選択する時。あなたの直感が試される。', 15, '決断', 4)">
-                            <div class="カード外枠"><img src="image3.png" alt="道"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image3', '分岐点', '進むべき道を選択する時。あなたの直感が試される。', 15, '決断')">
+                            <img src="image3.png" alt="道">
                         </div>
-                        <div class="カードスロット" onclick="選択イベント(this, 'image4', '夕暮れの影', '薄暗い影が伸びる。孤独感が静かに押し寄せてきた。', 20, '孤独', 5)">
-                            <div class="カード外枠"><img src="image4.png" alt="影"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image4', '夕暮れの影', '薄暗い影が伸びる。孤独感が静かに押し寄せてきた。', 20, '孤独')">
+                            <img src="image4.png" alt="影">
                         </div>
-                        <div class="カードスロット" onclick="選択イベント(this, 'image5', '夜の帳', '深い闇が世界を包む。不調の足音が近づいている。', 25, '黄昏', 6)">
-                            <div class="カード外枠"><img src="image5.png" alt="夜"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image5', '夜の帳', '深い闇が世界を包む。不調の足音が近づいている。', 25, '黄昏')">
+                            <img src="image5.png" alt="夜">
                         </div>
                     </div>
 
                     <div id="夜のカード" class="カードグリッド">
-                        <div class="カードスロット 黄色発光" onclick="選択イベント(this, 'image6', '状態：トイレにいきたい', '【緊急任務】限界突破寸前の生理欲求。一刻の猶予もない！', 20, '焦燥', 1)">
-                            <div class="カード外枠"><img src="image6.png" alt="トイレ"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image6', '状態：トイレにいきたい', '限界突破寸前の生理欲求。一刻の猶予もない！', 20, '焦燥')">
+                            <img src="image6.png" alt="トイレ">
                         </div>
-                        <div class="カードスロット 紫発光" onclick="選択イベント(this, 'image7', '状態：おなかいたい', '【持続ダメージ】内臓への痛撃を検知。行動力が削がれていく。', 40, '苦痛', 2)">
-                            <div class="カード外枠"><img src="image7.png" alt="腹痛"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image7', '状態：おなかいたい', '内臓への痛撃を検知。行動力が削がれていく。', 40, '苦痛')">
+                            <img src="image7.png" alt="腹痛">
                         </div>
-                        <div class="カードスロット 青発光" onclick="選択イベント(this, 'image8', '状態：あたまいたい', '【精神デバフ】頭部への過負荷。思考回路が強制冷却を求めている。', 30, '混乱', 3)">
-                            <div class="カード外枠"><img src="image8.png" alt="頭痛"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image8', '状態：あたまいたい', '頭部への過負荷。思考回路が強制冷却を求めている。', 30, '混乱')">
+                            <img src="image8.png" alt="頭痛">
                         </div>
-                        <div class="カードスロット 橙発光" onclick="選択イベント(this, 'image9', '状態：おなかすいた', '【エネルギー枯渇】内部燃料が完全にゼロ。補給を最優先せよ。', 15, '飢餓', 4)">
-                            <div class="カード外枠"><img src="image9.png" alt="空腹"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image9', '状態：おなかすいた', '内部燃料が完全にゼロ。補給を最優先せよ。', 15, '飢餓')">
+                            <img src="image9.png" alt="空腹">
                         </div>
-                        <div class="カードスロット 紺発光" onclick="選択イベント(this, 'image10', '状態：ねれない', '【システムエラー】覚醒状態が固定。ココロの休息フェーズに移行不能。', 35, '不眠', 5)">
-                            <div class="カード外枠"><img src="image10.png" alt="不眠"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image10', '状態：ねれない', '覚醒状態が固定。ココロの休息フェーズに移行不能。', 35, '不眠')">
+                            <img src="image10.png" alt="不眠">
                         </div>
-                        <div class="カードスロット 赤発光" onclick="選択イベント(this, 'image11', '状態：おしごといやだ', '【精神崩壊】全てのタスクへの拒絶。ココロが完全ボイコットを選択。', 60, '限界', 6)">
-                            <div class="カード外枠"><img src="image11.png" alt="拒否"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image11', '状態：おしごといやだ', '全てのタスクへの拒絶。ココロが完全ボイコットを選択。', 60, '限界')">
+                            <img src="image11.png" alt="拒否">
                         </div>
                     </div>
-
                 </main>
 
-                <aside class="ログウィンドウ">
-                    <div class="ログタイトル">【クエスト履歴】</div>
+                <aside class="ログエリア">
                     <div id="log-content" class="ログ中身">
-                        <div class="ログ行システム">システム起動… あなたの物語が始まります。</div>
+                        <div class="ログ行システム">システム起動。</div>
                     </div>
                 </aside>
             </div>
 
-            <footer class="メッセージウィンドウ">
-                <div class="ウィンドウ角"></div>
-                <div class="情報配置">
-                    <div class="ミニプレビュー">
-                        <div id="img-placeholder" class="未選択文字">未同調</div>
-                        <img id="preview-img" src="" alt="プレビュー" style="display: none;">
-                    </div>
-                    <div class="文章箱">
-                        <div id="msg-title" class="イベント名">行動を選択してください</div>
-                        <div id="msg-desc" class="イベント詳細">選んだ感情や状態によって、物語の章が進行し、ココロの属性が変化します。</div>
-                    </div>
-                </div>
+            <footer class="メッセージエリア">
+                <h2 id="msg-title" class="メッセージタイトル">行動を選択してください</h2>
+                <p id="msg-desc" class="メッセージ詳細">選んだ状態によって、物語が進行し、属性が変化します。</p>
             </footer>
         </div>
 
         <div id="結果画面" class="シーン">
             <h1 id="result-title" class="結果タイトル">結果確認中</h1>
-            <p id="result-desc" class="結果詳細">ここに物語の結末が描かれます。</p>
-            <div class="リトライ案内" onclick="ゲームリセット()">
-                ココロの旅をやり直す
-            </div>
+            <p id="result-desc" class="結果詳細">ここに結末が表示されます。</p>
+            <div class="リトライボタン" onclick="ゲームリセット()">最初からやり直す</div>
         </div>
 
     </div>
 
     <script>
-        // ゲームステータス管理変数
         let 精神耐久値 = 100;
         let 現在のルート = 'day';
         let 現在の章 = 1;
-        let 蓄積感情 = [];
 
-        // 章の名前リスト
         const 章の名前 = {
             1: "第1章：静かなる目覚め",
             2: "第2章：日常の歯車",
@@ -137,124 +113,82 @@
             document.getElementById('タイトル画面').classList.remove('active');
             document.getElementById('プレイ画面').classList.add('active');
             フラッシュ演出();
-            ログ追加("システム", "第1章の選択待ち状態です。カードを選んでください。");
+            ログ追加("システム", "第1章 開始。");
         }
 
-        function 選択イベント(要素, 画像名, タイトル, 説明, ダメージ, 感情属性, 選択された章) {
-            // 現在の章とカードの章が一致しない場合は進行させない
+        function 選択イベント(要素, 画像名, タイトル, 説明, ダメージ, 感情属性) {
             if (現在の章 > 6) return;
 
-            // 視覚的効果：選択状態の更新
-            document.querySelectorAll('.カードスロット').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.カード').forEach(c => c.classList.remove('selected'));
             要素.classList.add('selected');
-
-            // プレビュー表示の更新
-            const プレビュー画像 = document.getElementById('preview-img');
-            const プレースホルダー = document.getElementById('img-placeholder');
-            プレースホルダー.style.display = 'none';
-            プレビュー画像.style.display = 'block';
-            プレビュー画像.src = 画像名 + '.png';
 
             document.getElementById('msg-title').innerText = タイトル;
             document.getElementById('msg-desc').innerText = 説明;
 
-            // RPGパラメーター計算
             精神耐久値 -= ダメージ;
             if (精神耐久値 < 0) 精神耐久値 = 0;
             
-            蓄積感情.push(感情属性);
-
-            // ゲージのUI反映
             const ゲージ中身 = document.getElementById('mental-bar');
             ゲージ中身.style.width = 精神耐久値 + '%';
 
-            // ダメージ時のフラッシュと色変更
             if (ダメージ > 0) {
                 フラッシュ演出();
-                ログ追加("ダメージ", `精神に ${ダメージ} の負荷を感知！`);
-                if (精神耐久値 <= 40) {
-                    ゲージ中身.style.backgroundColor = '#ff1744';
-                }
+                ログ追加("ダメージ", `負荷：-${ダメージ}`);
             }
 
-            // ログへの書き込み
-            ログ追加("選択", `【${タイトル}】を実行。ココロに「${感情属性}」が蓄積。`);
-
-            // 属性（プレイヤー状態）の動的判定
+            ログ追加("選択", `${タイトル} （${感情属性}）`);
             更新プレイヤー属性(感情属性);
 
-            // 章の進行処理
             現在の章++;
             if (現在の章 <= 6) {
                 setTimeout(() => {
                     document.getElementById('current-chapter').innerText = 章の名前[現在の章];
-                    ログ追加("システム", `${章の名前[現在の章]} へ移行しました。`);
+                    ログ追加("システム", `${章の名前[現在の章]}`);
                     
-                    // ルート分岐チェック：精神耐久値が50以下、または特定の感情を抱えると夜ルートへ
                     if (現在のルート === 'day' && (精神耐久値 <= 50 || 感情属性 === '孤独' || 感情属性 === '黄昏')) {
                         現在のルート = 'night';
                         フラッシュ演出();
                         document.getElementById('昼のカード').classList.remove('active');
                         document.getElementById('夜のカード').classList.add('active');
-                        
-                        const バッジ = document.getElementById('route-badge');
-                        バッジ.innerText = '夜ルート（警告）';
-                        バッジ.style.background = '#ff1744';
-                        ログ追加("警告", "精神負荷が規定値を突破。夜の不調ルートへ強制移行。");
+                        ログ追加("警告", "不調ルートへ移行。");
                     }
-                }, 800);
+                }, 600);
             } else {
-                // 全ての章を終えたらエンディングフェーズへ
                 setTimeout(() => {
                     判定エンディング();
-                }, 1200);
+                }, 1000);
             }
         }
 
         function 更新プレイヤー属性(最新感情) {
             const ステータス表示 = document.getElementById('player-status');
-            ステータス表示.className = ""; // クラス名のリセット
-
+            
             if (精神耐久値 <= 20) {
                 ステータス表示.innerText = "満身創痍";
-                ステータス表示.classList.add("ステータス危険");
             } else if (最新感情 === '限界' || 最新感情 === '苦痛') {
                 ステータス表示.innerText = "精神混濁";
-                ステータス表示.classList.add("ステータス危険");
-            } else if (最新感情 === '焦燥' || 最新感情 === '混乱') {
-                ステータス表示.innerText = "警戒態勢";
-                ステータス表示.classList.add("ステータス警告");
             } else if (精神耐久値 >= 80) {
                 ステータス表示.innerText = "平穏無事";
-                ステータス表示.classList.add("ステータス通常");
             } else {
                 ステータス表示.innerText = "繊細モード";
-                ステータス表示.classList.add("ステータス警告");
             }
         }
 
         function ログ追加(種別, テキスト) {
             const ログ中身 = document.getElementById('log-content');
             const 新ログ = document.createElement('div');
-            
-            if (種別 === "ダメージ") 新ログ.className = "ログ行ダメージ";
-            else if (種別 === "警告") 新ログ.className = "ログ行警告";
-            else if (種別 === "システム") 新ログ.className = "ログ行システム";
-            else 新ログ.className = "ログ行通常";
-
-            新ログ.innerText = テキスト;
+            新ログ.className = "ログ行";
+            新ログ.innerText = `・ ${テキスト}`;
             ログ中身.appendChild(新ログ);
-            
-            // スクロールを自動追従
             ログ中身.scrollTop = ログ中身.scrollHeight;
         }
 
         function フラッシュ演出() {
             const エフェクト = document.getElementById('flash-effect');
-            エフェクト.style.opacity = '1';
+            エフェクト.style.opacity = '0.3';
             setTimeout(() => {
                 エフェクト.style.opacity = '0';
-            }, 150);
+            }, 100);
         }
 
         function 判定エンディング() {
@@ -265,21 +199,17 @@
             const 詳細枠 = document.getElementById('result-desc');
 
             if (精神耐久値 <= 0) {
-                タイトル枠.innerText = "バッドエンド：完全停止";
-                タイトル枠.style.color = "#ff1744";
-                詳細枠.innerText = "ココロの耐久値が底を突きました。これ以上の前進は不可能です。今日のミッションは完全撤退を余儀なくされました。ただちに全てのデバイスを閉じて眠りについてください。";
+                タイトル枠.innerText = "完全停止";
+                詳細枠.innerText = "ココロの耐久値が底を突きました。これ以上の前進は不可能です。今日のミッションは完全撤退を余儀なくされました。";
             } else if (現在のルート === 'night' && 精神耐久値 < 40) {
-                タイトル枠.innerText = "ノーマルエンド：不調サバイバル";
-                タイトル枠.style.color = "#d500f9";
-                詳細枠.innerText = "数々の頭痛や腹痛、あるいは「仕事いやだ」という強烈な精神デバフをくぐり抜け、なんとか一日を生き延びました。満身創痍のサバイバルクリアです。";
+                タイトル枠.innerText = "不調サバイバル";
+                詳細枠.innerText = "数々の頭痛や腹痛に耐え抜き、なんとか一日を生き延びました。満身創痍のクリアです。";
             } else if (現在のルート === 'day' && 精神耐久値 >= 80) {
-                タイトル枠.innerText = "トゥルーエンド：完全なる調和";
-                タイトル枠.style.color = "#00e5ff";
-                詳細枠.innerText = "おめでとうございます！すべての違和感や不穏なノイズを完全に制御し、極めて高い精神耐久値を維持したまま一日を完了しました。完璧な旅路です。";
+                タイトル枠.innerText = "完全なる調和";
+                詳細枠.innerText = "おめでとうございます！すべてのノイズを制御し、高い精神耐久値を維持したまま一日を完了しました。";
             } else {
-                タイトル枠.innerText = "通常エンド：普通の軌跡";
-                タイトル枠.style.color = "#ffffff";
-                詳細枠.innerText = "多少の波風や疲れ、小さな葛藤はありましたが、ごく平均的で穏やかな一日として物語は収束しました。この普通の日常こそが、ある種の最適解かもしれません。";
+                タイトル枠.innerText = "普通の軌跡";
+                詳細枠.innerText = "多少の波風や疲れはありましたが、ごく平均的で穏やかな一日として物語は収束しました。";
             }
         }
 
@@ -287,29 +217,17 @@
             精神耐久値 = 100;
             現在のルート = 'day';
             現在の章 = 1;
-            蓄積感情 = [];
             
             document.getElementById('mental-bar').style.width = '100%';
-            document.getElementById('mental-bar').style.backgroundColor = '#00e5ff';
             document.getElementById('current-chapter').innerText = 章の名前[1];
-            
-            const ステータス表示 = document.getElementById('player-status');
-            ステータス表示.innerText = "通常状態";
-            ステータス表示.className = "ステータス通常";
-
-            const バッジ = document.getElementById('route-badge');
-            バッジ.innerText = '昼ルート';
-            バッジ.style.background = '#00e5ff';
+            document.getElementById('player-status').innerText = "通常状態";
             
             document.getElementById('昼のカード').classList.add('active');
             document.getElementById('夜のカード').classList.remove('active');
             
-            document.getElementById('preview-img').style.display = 'none';
-            document.getElementById('img-placeholder').style.display = 'flex';
             document.getElementById('msg-title').innerText = '行動を選択してください';
-            document.getElementById('msg-desc').innerText = '選んだ感情や状態によって、物語の章が進行し、ココロの属性が変化します。';
-
-            document.getElementById('log-content').innerHTML = '<div class="ログ行システム">システム再起動… 新しい運命が紡がれます。</div>';
+            document.getElementById('msg-desc').innerText = '選んだ状態によって、物語が進行し、属性が変化します。';
+            document.getElementById('log-content').innerHTML = '<div class="ログ行システム">システム再起動。</div>';
 
             document.getElementById('結果画面').classList.remove('active');
             document.getElementById('タイトル画面').classList.add('active');
