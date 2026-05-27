@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ココロノノート - 感情解放RPG</title>
+    <title>ココロノノート</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,7 +17,6 @@
         </div>
 
         <div id="プレイ画面" class="シーン">
-            
             <header class="ステータスエリア">
                 <div class="状態テキスト">
                     <span id="current-chapter">第1章：静かなる目覚め</span>
@@ -26,57 +25,30 @@
             </header>
 
             <div class="メインコンテンツ">
-                
                 <main class="カードエリア">
                     <div id="昼のカード" class="カードグリッド アクティブ">
-                        <div class="カード" onclick="選択イベント(this, 'image0', 'いつも通りの朝', '自分の力でベッドから起き上がった。')">
-                            <img src="image0.png" alt="朝">
-                        </div>
-                        <div class="カード" onclick="選択イベント(this, 'image1', '動き出す街', '自分のペースで、今日すべきことに向かって進む。')">
-                            <img src="image1.png" alt="昼">
-                        </div>
-                        <div class="カード" onclick="選択イベント(this, 'image2', '小さな違和感', '少し心がざわつく。でも、自分で対処できる。')">
-                            <img src="image2.png" alt="夕">
-                        </div>
-                        <div class="カード" onclick="選択イベント(this, 'image3', '分岐点', '進むべき道を自分で決める。')">
-                            <img src="image3.png" alt="道">
-                        </div>
-                        <div class="カード" onclick="選択イベント(this, 'image4', '夕暮れの影', '一日の終わりが見えてきた。少し疲れが出始める。')">
-                            <img src="image4.png" alt="影">
-                        </div>
-                        <div class="カード" onclick="選択イベント(this, 'image5', '夜の帳', '夜がやってくる。心を落ち着ける時間。')">
-                            <img src="image5.png" alt="夜">
-                        </div>
+                        <div class="カード" onclick="選択イベント(this, 'image0', 'いつも通りの朝', '自分の力でベッドから起き上がった。')"><img src="image0.png" alt="朝"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image1', '動き出す街', '自分のペースで、今日すべきことに向かって進む。')"><img src="image1.png" alt="昼"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image2', '小さな違和感', '少し心がざわつく。でも、自分で対処できる。')"><img src="image2.png" alt="夕"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image3', '分岐点', '進むべき道を自分で決める。')"><img src="image3.png" alt="道"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image4', '夕暮れの影', '一日の終わりが見えてきた。少し疲れが出始める。')"><img src="image4.png" alt="影"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image5', '夜の帳', '夜がやってくる。心を落ち着ける時間。')"><img src="image5.png" alt="夜"></div>
                     </div>
 
                     <div id="夜のカード" class="カードグリッド">
-                        <div class="カード" onclick="選択イベント(this, 'image6', '状態：トイレにいきたい', '体のサイン。自分で気づいて動く。')">
-                            <img src="image6.png" alt="トイレ">
-                        </div>
-                        <div class="カード" onclick="選択イベント(this, 'image7', '状態：おなかいたい', 'お腹が痛む。無理せず、自分を労わってあげる。')">
-                            <img src="image7.png" alt="腹痛">
-                        </div>
-                        <div class="カード" onclick="選択イベント(this, 'image8', '状態：あたまいたい', '頭が重い。今は考えるのをやめて休むサイン。')">
-                            <img src="image8.png" alt="頭痛">
-                        </div>
-                        <div class="カード" onclick="選択イベント(this, 'image9', '状態：おなかすいた', 'エネルギー切れ。自分の体に栄養を補給する。')">
-                            <img src="image9.png" alt="空腹">
-                        </div>
-                        <div class="カード" onclick="選択イベント(this, 'image10', '状態：ねれない', '目が冴えてしまう。嫌な夢を見ないように、ここで心を整理する。')">
-                            <img src="image10.png" alt="不眠">
-                        </div>
-                        <div class="カード" onclick="選択イベント(this, 'image11', '状態：おしごといやだ', '嫌なこと、つらい気持ち。ここに全部吐き出していい。')">
-                            <img src="image11.png" alt="拒否">
-                        </div>
+                        <div class="カード" onclick="選択イベント(this, 'image6', '状態：トイレにいきたい', '体のサイン。自分で気づいて動く。')"><img src="image6.png" alt="トイレ"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image7', '状態：おなかいたい', 'お腹が痛む。無理せず、自分を労わってあげる。')"><img src="image7.png" alt="腹痛"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image8', '状態：あたまいたい', '頭が重い。今は考えるのをやめて休むサイン。')"><img src="image8.png" alt="頭痛"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image9', '状態：おなかすいた', 'エネルギー切れ。自分の体に栄養を補給する。')"><img src="image9.png" alt="空腹"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image10', '状態：ねれない', '目が冴えてしまう。嫌な夢を見ないように、ここで心を整理する。')"><img src="image10.png" alt="不眠"></div>
+                        <div class="カード" onclick="選択イベント(this, 'image11', '状態：おしごといやだ', '嫌なこと、つらい気持ち。ここに全部吐き出していい。')"><img src="image11.png" alt="拒否"></div>
                     </div>
                 </main>
 
                 <aside class="自由記述エリア">
                     <div class="エリア見出し">【ココロの自由記述欄】</div>
-                    <p class="記述説明">いま思っていること、嫌なこと、愚痴、何でも自由に書いて、吐き出してください。</p>
-                    
+                    <p class="記述説明">いま思っていること、何でも自由に書いて、吐き出してください。</p>
                     <textarea id="free-text" placeholder="ここに文字で気持ちを吐き出せます…"></textarea>
-                    
                     <div class="キャンバス枠">
                         <canvas id="paint-canvas" width="240" height="150"></canvas>
                         <button class="消去ボタン" onclick="キャンバスクリア()">描き直す</button>
@@ -87,43 +59,37 @@
             <footer class="メッセージエリア">
                 <div class="メッセージテキスト">
                     <h2 id="msg-title" class="メッセージタイトル">カードを1枚選んでください</h2>
-                    <p id="msg-desc" class="メッセージ詳細">あなたの状態に近いものを選び、右側にいまの気持ちを吐き出したら、下のボタンで次へ進みます。</p>
+                    <p id="msg-desc" class="メッセージ詳細">あなたの状態に近いものを選び、次へ進みます。</p>
                 </div>
-                <button id="next-btn" class="次へボタン" onclick="次の章へ()" disabled>この章を記録して次へ →</button>
+                <button id="next-btn" class="次へボタン" onclick="次の章へ()" disabled>次へ進む →</button>
             </footer>
         </div>
 
         <div id="結果画面" class="シーン">
             <h1 class="結果タイトル">本日のクエスト総括ノート</h1>
-            <p class="お守りメッセージ">嫌なことは全てここに置いていこう。今夜は嫌な夢を見ず、穏やかに眠れますように。</p>
-            
+            <p class="お守りメッセージ">今夜は嫌な夢を見ず、穏やかに眠れますように。</p>
             <div class="一括表示エリア">
                 <div class="総括ブロック">
                     <h3>【あなたが選んだ軌跡】</h3>
                     <div id="summary-choices" class="まとめリスト"></div>
                 </div>
-
                 <div class="総括ブロック">
-                    <h3>【あなたが吐き出したココロの言葉】</h3>
+                    <h3>【あなたが吐き出した言葉】</h3>
                     <div id="summary-text" class="まとめテキスト"></div>
                 </div>
             </div>
-
             <div class="リトライボタン" onclick="ゲームリセット()">新しい一日を始める</div>
         </div>
 
     </div>
 
     <script>
-        // 状態管理
-        let 現在のルート = 'day';
-        let 現在の章 = 1;
-        
-        // データ蓄積配列
-        let 選択履歴 = [];
-        let 記述履歴 = [];
+        var 現在のルート = 'day';
+        var 現在の章 = 1;
+        var 選択履歴 = [];
+        var 記述履歴 = [];
 
-        const 章の名前 = {
+        var 章の名前 = {
             1: "第1章：静かなる目覚め",
             2: "第2章：日常の歯車",
             3: "第3章：忍び寄る不穏",
@@ -132,7 +98,7 @@
             6: "最終章：ココロの結末"
         };
 
-        let 一時選択 = null;
+        var 一時選択 = null;
 
         function ゲーム開始() {
             document.getElementById('タイトル画面').classList.remove('active');
@@ -141,7 +107,7 @@
         }
 
         function 選択イベント(要素, 画像名, タイトル, 説明) {
-            document.querySelectorAll('.カード').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.カード').forEach(function(c) { c.classList.remove('selected'); });
             要素.classList.add('selected');
 
             document.getElementById('msg-title').innerText = タイトル;
@@ -161,17 +127,17 @@
 
             選択履歴.push(一時選択);
             
-            const 入力テキスト = document.getElementById('free-text').value.trim();
+            var 入力テキスト = document.getElementById('free-text').value.trim();
             if (入力テキスト) {
                 記述履歴.push("【" + 章の名前[現在の章] + "】: " + 入力テキスト);
             } else {
-                記述履歴.push("【" + 章の名前[現在の章] + "】: （言葉にできない想い、または自由描画を記録）");
+                記述履歴.push("【" + 章の名前[現在の章] + "】: （言葉にできない想いを記録）");
             }
 
             document.getElementById('free-text').value = '';
             キャンバスクリア();
 
-            const 選択タイトル = 一時選択.タイトル || '';
+            var 選択タイトル = 一時選択.タイトル || '';
             if (現在のルート === 'day' && 現在の章 >= 2) {
                 if (選択タイトル.indexOf('違和感') !== -1 || 選択タイトル.indexOf('影') !== -1 || 選択タイトル.indexOf('帳') !== -1) {
                     現在のルート = 'night';
@@ -183,7 +149,7 @@
             現在の章++;
             一時選択 = null;
             document.getElementById('next-btn').disabled = true;
-            document.querySelectorAll('.カード').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.カード').forEach(function(c) { c.classList.remove('selected'); });
 
             if (現在の章 <= 6) {
                 document.getElementById('current-chapter').innerText = 章の名前[現在の章];
@@ -198,19 +164,18 @@
             document.getElementById('プレイ画面').classList.remove('active');
             document.getElementById('結果画面').classList.add('active');
 
-            const 選択枠 = document.getElementById('summary-choices');
-            選択枠.innerHTML = 選択履歴.map(h => 
-                '<div class="まとめアイテム">' +
-                    '<strong>' + h.章 + '</strong><br>' +
-                    '<span>選択：' + h.タイトル + '</span>' +
-                '</div>'
-            ).join('');
+            var 選択枠 = document.getElementById('summary-choices');
+            選択枠.innerHTML = 選択履歴.map(function(h) { 
+                return '<div class="まとめアイテム"><strong>' + h.章 + '</strong><br><span>選択：' + h.タイトル + '</span></div>';
+            }).join('');
 
-            const テキスト枠 = document.getElementById('summary-text');
-            テキスト枠.innerHTML = 記述履歴.map(t => '<p class="まとめ行">' + t + '</p>').join('');
+            var テキスト枠 = document.getElementById('summary-text');
+            テキスト枠.innerHTML = 記述履歴.map(function(t) { 
+                return '<p class="まとめ行">' + t + '</p>';
+            }).join('');
         }
 
-        let キャンバス, コンテキスト, 描画中 = false;
+        var キャンバス, コンテキスト, 描画中 = false;
 
         function キャンバス初期化() {
             キャンバス = document.getElementById('paint-canvas');
@@ -240,13 +205,13 @@
         function 描画開始(e) {
             描画中 = true;
             コンテキスト.beginPath();
-            const 座標 = キャンバス座標取得(e);
+            var 座標 = キャンバス座標取得(e);
             コンテキスト.moveTo(座標.x, 座標.y);
         }
 
         function 描画中動作(e) {
             if (!描画中) return;
-            const 座標 = キャンバス座標取得(e);
+            var 座標 = キャンバス座標取得(e);
             コンテキスト.lineTo(座標.x, 座標.y);
             コンテキスト.stroke();
         }
@@ -256,7 +221,7 @@
         }
 
         function キャンバス座標取得(e) {
-            const 矩形 = キャンバス.getBoundingClientRect();
+            var 矩形 = キャンバス.getBoundingClientRect();
             return {
                 x: e.clientX - 矩形.left,
                 y: e.clientY - 矩形.top
@@ -283,7 +248,7 @@
             document.getElementById('free-text').value = '';
             
             document.getElementById('msg-title').innerText = 'カードを1枚選んでください';
-            document.getElementById('msg-desc').innerText = 'あなたの状態に近いものを選び、右側にいまの気持ちを吐き出したら、下のボタンで次へ進みます。';
+            document.getElementById('msg-desc').innerText = 'あなたの状態に近いものを選び、次へ進みます。';
 
             document.getElementById('結果画面').classList.remove('active');
             document.getElementById('タイトル画面').classList.add('active');
