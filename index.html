@@ -3,36 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>コミュニケーションカード</title>
+    <title>GAME STYLE SELECT PANEL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="card-container">
-        <div class="card">
-            <img src="image6.png" alt="トイレにいきたい">
-        </div>
+    <div class="bg-effects"></div>
 
-        <div class="card">
-            <img src="image7.png" alt="おなかがいたい">
-        </div>
+    <div class="game-container">
+        <header class="game-header">
+            <h1 class="game-title">STATUS SELECT</h1>
+            <p class="game-subtitle">現在の状態を選択してください</p>
+        </header>
 
-        <div class="card">
-            <img src="image8.png" alt="あたまがいたい">
-        </div>
+        <div class="select-grid">
+            
+            <div class="game-card" data-color="yellow" onclick="selectCard(this)">
+                <div class="card-glow"></div>
+                <div class="card-inner">
+                    <img src="image6.png" alt="といれにいきたい">
+                </div>
+            </div>
 
-        <div class="card">
-            <img src="image9.png" alt="おなかがすいた">
-        </div>
+            <div class="game-card" data-color="green" onclick="selectCard(this)">
+                <div class="card-glow"></div>
+                <div class="card-inner">
+                    <img src="image7.png" alt="おなかいたい">
+                </div>
+            </div>
 
-        <div class="card">
-            <img src="image10.png" alt="ねれない">
-        </div>
+            <div class="game-card" data-color="blue" onclick="selectCard(this)">
+                <div class="card-glow"></div>
+                <div class="card-inner">
+                    <img src="image8.png" alt="あたまいたい">
+                </div>
+            </div>
 
-        <div class="card">
-            <img src="image11.png" alt="おしごといやだ">
+            <div class="game-card" data-color="orange" onclick="selectCard(this)">
+                <div class="card-glow"></div>
+                <div class="card-inner">
+                    <img src="image9.png" alt="おなかすいた">
+                </div>
+            </div>
+
+            <div class="game-card" data-color="purple" onclick="selectCard(this)">
+                <div class="card-glow"></div>
+                <div class="card-inner">
+                    <img src="image10.png" alt="ねれない">
+                </div>
+            </div>
+
+            <div class="game-card" data-color="red" onclick="selectCard(this)">
+                <div class="card-glow"></div>
+                <div class="card-inner">
+                    <img src="image11.png" alt="おしごといやだ">
+                </div>
+            </div>
+
         </div>
     </div>
+
+    <script>
+        function selectCard(element) {
+            // すでに選択されている他のカードの選択状態を解除
+            document.querySelectorAll('.game-card').forEach(card => {
+                if (card !== element) card.classList.remove('active');
+            });
+            // クリックされたカードの選択状態を切り替え（トグル）
+            element.classList.toggle('active');
+        }
+    </script>
 
 </body>
 </html>
