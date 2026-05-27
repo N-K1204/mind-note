@@ -3,168 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STORY SELECTOR - COMPLETE GAME EDITION</title>
+    <title>ココロノクエスト - 感情選択アドベンチャー</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="game-bg">
-        <div class="scanlines"></div>
-        <div class="grid-lines"></div>
-    </div>
+    <div class="ゲーム画面">
+        <div class="走査線"></div>
+        <div class="画面フラッシュ" id="flash-effect"></div>
 
-    <div class="main-interface">
-        
-        <header class="ui-header">
-            <div class="logo-area">
-                <span class="system-tag">SYSTEM v2.6</span>
-                <h1 class="main-logo">STORY CHOOSE</h1>
+        <div id="タイトル画面" class="シーン アクティブ">
+            <div class="タイトルロゴ">
+                <div class="サブタイトル">精神状態管理システム</div>
+                <h1 class="メインタイトル">ココロノ<br>クエスト</h1>
             </div>
+            <div class="スタート案内" onclick="ゲーム開始()">
+                画面をタッチしてスタート
+            </div>
+        </div>
+
+        <div id="プレイ画面" class="シーン">
             
-            <div class="route-selector">
-                <button class="route-btn active" id="btn-day" onclick="changeRoute('day')">
-                    <span class="mode-num">01</span> DAY SIDE (通常)
-                </button>
-                <button class="route-btn" id="btn-night" onclick="changeRoute('night')">
-                    <span class="mode-num">02</span> NIGHT SIDE (不調)
-                </button>
-            </div>
-        </header>
+            <header class="ステータスエリア">
+                <div class="ゲージ枠">
+                    <span class="ゲージラベル">メンタル</span>
+                    <div class="ゲージ本体"><div id="mental-bar" class="ゲージ中身" style="width: 100%;"></div></div>
+                </div>
+                <div class="ルートバッジ" id="route-badge">昼ルート</div>
+            </header>
 
-        <main class="panel-stage">
-            
-            <div id="grid-day" class="panel-grid active">
-                <div class="panel-slot type-day" onclick="panelSelect(this, 'image0', 'DAY ROUTE: 01', 'ここから全ての物語がスタートする。まだ体調は万全、エネルギーに満ち溢れている。')">
-                    <div class="slot-frame">
-                        <img src="image0.png" alt="DAY 01">
+            <main class="ステージ">
+                
+                <div id="昼のカード" class="カードグリッド アクティブ">
+                    <div class="カードスロット" onclick="選択イベント(this, 'image0', 'いつも通りの朝', '目が覚めた。体調は万全。今日はどんな一日になるだろう。', 0)">
+                        <div class="カード外枠"><img src="image0.png" alt="朝"></div>
+                    </div>
+                    <div class="カードスロット" onclick="選択イベント(this, 'image1', '動き出す街', '通学路を歩く。心地よい風が吹き抜けていく。', 0)">
+                        <div class="カード外枠"><img src="image1.png" alt="昼"></div>
+                    </div>
+                    <div class="カードスロット" onclick="選択イベント(this, 'image2', '小さな違和感', '少し空気が重い気がする。気のせいだろうか。', 10)">
+                        <div class="カード外枠"><img src="image2.png" alt="夕"></div>
+                    </div>
+                    <div class="カードスロット" onclick="選択イベント(this, 'image3', '分岐点', '進むべき道が二つに分かれている。直感を信じよう。', 10)">
+                        <div class="カード外枠"><img src="image3.png" alt="道"></div>
+                    </div>
+                    <div class="カードスロット" onclick="選択イベント(this, 'image4', '夕暮れの影', '影が長く伸びていく。そろそろ家に帰る時間だ。', 20)">
+                        <div class="カード外枠"><img src="image4.png" alt="影"></div>
+                    </div>
+                    <div class="カードスロット" onclick="選択イベント(this, 'image5', '夜の帳', '夜がやってきた。今日も一日が無事に終わるはずだった。', 20)">
+                        <div class="カード外枠"><img src="image5.png" alt="夜"></div>
                     </div>
                 </div>
-                <div class="panel-slot type-day" onclick="panelSelect(this, 'image1', 'DAY ROUTE: 02', '少しずつ周囲の状況が動き出す。順調にタスクを消化している状態。')">
-                    <div class="slot-frame">
-                        <img src="image1.png" alt="DAY 02">
-                    </div>
-                </div>
-                <div class="panel-slot type-day" onclick="panelSelect(this, 'image2', 'DAY ROUTE: 03', '中盤戦に突入。イベントが発生し、物語がさらに深みを増していく。')">
-                    <div class="slot-frame">
-                        <img src="image2.png" alt="DAY 03">
-                    </div>
-                </div>
-                <div class="panel-slot type-day" onclick="panelSelect(this, 'image3', 'DAY ROUTE: 04', '折り返し地点を通過。ここまでの選択が後半の展開に影響を与える。')">
-                    <div class="slot-frame">
-                        <img src="image3.png" alt="DAY 04">
-                    </div>
-                </div>
-                <div class="panel-slot type-day" onclick="panelSelect(this, 'image4', 'DAY ROUTE: 05', '終盤の兆し。これまでの行動の成果が形になり始める時間帯。')">
-                    <div class="slot-frame">
-                        <img src="image4.png" alt="DAY 05">
-                    </div>
-                </div>
-                <div class="panel-slot type-day" onclick="panelSelect(this, 'image5', 'DAY ROUTE: 06', 'DAY SIDE 最終章。無事にミッションをクリアし、次のステップへ。')">
-                    <div class="slot-frame">
-                        <img src="image5.png" alt="DAY 06">
-                    </div>
-                </div>
-            </div>
 
-            <div id="grid-night" class="panel-grid">
-                <div class="panel-slot type-yellow" onclick="panelSelect(this, 'image6', 'CONDITION: トイレにいきたい', '緊急ステータス：★☆☆ / 最優先で処理すべき生理欲求が発生。ルート確保を急げ。')">
-                    <div class="slot-frame">
-                        <img src="image6.png" alt="トイレにいきたい">
+                <div id="夜のカード" class="カードグリッド">
+                    <div class="カードスロット 黄色発光" onclick="選択イベント(this, 'image6', '状態：トイレにいきたい', '緊急事態発生！最優先で避難経路を確保しなければならない。', 30)">
+                        <div class="カード外枠"><img src="image6.png" alt="トイレ"></div>
+                    </div>
+                    <div class="カードスロット 紫発光" onclick="選択イベント(this, 'image7', '状態：おなかいたい', '腹部に激しい痛みを感知。体力が徐々に削られている。', 50)">
+                        <div class="カード外枠"><img src="image7.png" alt="腹痛"></div>
+                    </div>
+                    <div class="カードスロット 青発光" onclick="選択イベント(this, 'image8', '状態：あたまいたい', '頭痛のデバフが発生中。思考の処理速度が大幅に低下している。', 40)">
+                        <div class="カード外枠"><img src="image8.png" alt="頭痛"></div>
+                    </div>
+                    <div class="カードスロット 橙発光" onclick="選択イベント(this, 'image9', '状態：おなかすいた', '内部エネルギーが枯渇。何か食べ物を補給しなければ動けない。', 20)">
+                        <div class="カード外枠"><img src="image9.png" alt="空腹"></div>
+                    </div>
+                    <div class="カードスロット 紺発光" onclick="選択イベント(this, 'image10', '状態：ねれない', '脳が異常に覚醒している。強制終了（睡眠）コマンドが通らない。', 40)">
+                        <div class="カード外枠"><img src="image10.png" alt="不眠"></div>
+                    </div>
+                    <div class="カードスロット 赤発光" onclick="選択イベント(this, 'image11', '状態：おしごといやだ', '精神崩壊の危機！全てのミッションをボイコットしたくなっている。', 80)">
+                        <div class="カード外枠"><img src="image11.png" alt="拒否"></div>
                     </div>
                 </div>
-                <div class="panel-slot type-magenta" onclick="panelSelect(this, 'image7', 'CONDITION: おなかいたい', '緊急ステータス：★★★ / 持続的なダメージデバフを検知。ただちに温かい環境で休息せよ。')">
-                    <div class="slot-frame">
-                        <img src="image7.png" alt="おなかいたい">
-                    </div>
-                </div>
-                <div class="panel-slot type-blue" onclick="panelSelect(this, 'image8', 'CONDITION: あたまいたい', '緊急ステータス：★★☆ / 思考プロセスの処理速度が低下中。画面の輝度を下げて静養を推奨。')">
-                    <div class="slot-frame">
-                        <img src="image8.png" alt="あたまいたい">
-                    </div>
-                </div>
-                <div class="panel-slot type-orange" onclick="panelSelect(this, 'image9', 'CONDITION: おなかすいた', '緊急ステータス：★☆☆ / 内部燃料が枯渇。カロリーおよびハイドレーションの補給が必要。')">
-                    <div class="slot-frame">
-                        <img src="image9.png" alt="おなかすいた">
-                    </div>
-                </div>
-                <div class="panel-slot type-purple" onclick="panelSelect(this, 'image10', 'CONDITION: ねれない', '緊急ステータス：★★☆ / 精神ログのクローズに失敗。リラックスサウンドの導入を検討。')">
-                    <div class="slot-frame">
-                        <img src="image10.png" alt="ねれない">
-                    </div>
-                </div>
-                <div class="panel-slot type-red" onclick="panelSelect(this, 'CONDITION: おしごといやだ', '緊急ステータス：LIMIT OVER / メンタル耐久値がゼロ。本日の全ミッションを強制終了します。')">
-                    <div class="slot-frame">
-                        <img src="image11.png" alt="おしごといやだ">
-                    </div>
-                </div>
-            </div>
 
-        </main>
+            </main>
 
-        <footer class="status-window">
-            <div class="window-border"></div>
-            <div class="info-layout">
-                <div class="preview-box">
-                    <div id="preview-img-placeholder" class="placeholder-text">NO DATA</div>
-                    <img id="preview-img" src="" alt="Preview" style="display: none;">
+            <footer class="メッセージウィンドウ">
+                <div class="ウィンドウ角"></div>
+                <div class="情報配置">
+                    <div class="ミニプレビュー">
+                        <div id="img-placeholder" class="未選択文字">未感知</div>
+                        <img id="preview-img" src="" alt="プレビュー" style="display: none;">
+                    </div>
+                    <div class="文章箱">
+                        <div id="msg-title" class="イベント名">カードを選べ…</div>
+                        <div id="msg-desc" class="イベント詳細">あなたの現在の状態をシステムに入力してください。</div>
+                    </div>
                 </div>
-                <div class="text-box">
-                    <div id="status-title" class="status-title">SELECT A CARD</div>
-                    <div id="status-desc" class="status-desc">カードを選択すると、ここに詳細なゲームステータスとフレーバーテキストがロードされます。</div>
-                </div>
+            </footer>
+        </div>
+
+        <div id="ゲームオーバー画面" class="シーン">
+            <h1 class="警告タイトル">限界突破</h1>
+            <p class="警告詳細">メンタルゲージがゼロになりました。本日の行動を中止します。</p>
+            <div class="リトライ案内" onclick="ゲームリセット()">
+                もう一度最初からやり直す
             </div>
-        </footer>
+        </div>
 
     </div>
 
     <script>
-        // 昼ルートと夜ルートを完全に切り替える関数
-        function changeRoute(route) {
-            // 全てのルートボタンとグリッドからアクティブクラスを削除
-            document.querySelectorAll('.route-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.panel-grid').forEach(grid => grid.classList.remove('active'));
+        let 現在のメンタル = 100;
+        let 現在のルート = 'day';
+
+        function ゲーム開始() {
+            document.getElementById('タイトル画面').classList.remove('active');
+            document.getElementById('プレイ画面').classList.add('active');
+            画面フラッシュ演出();
+        }
+
+        function 選択イベント(要素, 画像名, タイトル, 説明, ダメージ) {
+            // すべてのカードから選択状態を解除
+            document.querySelectorAll('.カードスロット').forEach(c => c.classList.remove('selected'));
+            // 選んだカードを選択状態に
+            要素.classList.add('selected');
+
+            // 画面下部の情報を書き換え
+            const プレビュー画像 = document.getElementById('preview-img');
+            const プレースホルダー = document.getElementById('img-placeholder');
             
-            // 選択されたルートをアクティブにする
-            if(route === 'day') {
-                document.getElementById('btn-day').classList.add('active');
-                document.getElementById('grid-day').classList.add('active');
-            } else {
-                document.getElementById('btn-night').classList.add('active');
-                document.getElementById('grid-night').classList.add('active');
+            プレースホルダー.style.display = 'none';
+            プレビュー画像.style.display = 'block';
+            プレビュー画像.src = 画像名 + '.png';
+
+            document.getElementById('msg-title').innerText = タイトル;
+            document.getElementById('msg-desc').innerText = 説明;
+
+            // メンタルゲージの計算と演出
+            現在のメンタル -= ダメージ;
+            if (現在のメンタル < 0) 現在のメンタル = 0;
+            
+            const ゲージ中身 = document.getElementById('mental-bar');
+            ゲージ中身.style.width = 現在のメンタル + '%';
+
+            if (ダメージ > 0) {
+                画面フラッシュ演出();
+                if (現在のメンタル <= 40) {
+                    ゲージ中身.style.backgroundColor = '#ff1744'; // 危険色は赤
+                }
             }
-            // ルート変更時に下部の選択情報を初期状態にリセット
-            resetWindow();
+
+            // ルート自動切り替えギミック（メンタル半分以下で夜ルートへ強制突入）
+            if (現在のルート === 'day' && 現在のメンタル <= 50) {
+                現在のルート = 'night';
+                setTimeout(() => {
+                    画面フラッシュ演出();
+                    document.getElementById('昼のカード').classList.remove('active');
+                    document.getElementById('夜のカード').classList.add('active');
+                    document.getElementById('route-badge').innerText = '夜ルート（警告）';
+                    document.getElementById('route-badge').style.background = '#ff1744';
+                }, 800);
+            }
+
+            // ゲームオーバー判定
+            if (現在のメンタル <= 0) {
+                setTimeout(() => {
+                    document.getElementById('プレイ画面').classList.remove('active');
+                    document.getElementById('ゲームオーバー画面').classList.add('active');
+                }, 1000);
+            }
         }
 
-        // カードスロットが選択されたときの処理関数
-        function panelSelect(element, imgName, title, desc) {
-            // 同じグリッド内の他のカードから選択状態（selected）を解除
-            document.querySelectorAll('.panel-slot').forEach(slot => slot.classList.remove('selected'));
-            
-            // クリックされたカードに選択状態を付与
-            element.classList.add('selected');
-
-            // 下部ウィンドウのパーツを取得
-            const previewImg = document.getElementById('preview-img');
-            const placeholder = document.getElementById('preview-img-placeholder');
-            
-            // プレビュー画像の切り替え
-            placeholder.style.display = 'none';
-            previewImg.style.display = 'block';
-            previewImg.src = imgName + '.png';
-
-            // テキスト情報の書き換え
-            document.getElementById('status-title').innerText = title;
-            document.getElementById('status-desc').innerText = desc;
+        function 画面フラッシュ演出() {
+            const エフェクト = document.getElementById('flash-effect');
+            エフェクト.style.opacity = '1';
+            setTimeout(() => {
+                エフェクト.style.opacity = '0';
+            }, 150);
         }
 
-        // ウィンドウ表示のリセット関数
-        function resetWindow() {
-            document.querySelectorAll('.panel-slot').forEach(slot => slot.classList.remove('selected'));
+        function ゲームリセット() {
+            現在のメンタル = 100;
+            現在のルート = 'day';
+            
+            document.getElementById('mental-bar').style.width = '100%';
+            document.getElementById('mental-bar').style.backgroundColor = '#00e5ff';
+            document.getElementById('route-badge').innerText = '昼ルート';
+            document.getElementById('route-badge').style.background = '#00e5ff';
+            
+            document.getElementById('昼のカード').classList.add('active');
+            document.getElementById('夜のカード').classList.remove('active');
+            
+            document.querySelectorAll('.カードスロット').forEach(c => c.classList.remove('selected'));
             document.getElementById('preview-img').style.display = 'none';
-            document.getElementById('preview-img-placeholder').style.display = 'flex';
-            document.getElementById('status-title').innerText = 'SELECT A CARD';
-            document.getElementById('status-desc').innerText = 'カードを選択すると、ここに詳細なゲームステータスとフレーバーテキストがロードされます。';
+            document.getElementById('img-placeholder').style.display = 'flex';
+            document.getElementById('msg-title').innerText = 'カードを選べ…';
+            document.getElementById('msg-desc').innerText = 'あなたの現在の状態をシステムに入力してください。';
+
+            document.getElementById('ゲームオーバー画面').classList.remove('active');
+            document.getElementById('タイトル画面').classList.add('active');
         }
     </script>
 
