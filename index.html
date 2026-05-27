@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>きもち・こうどう カード</title>
+    <title>きもちカード</title>
     <style>
         /* 全体のデザイン調整 */
         body {
@@ -33,7 +33,7 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 20px;
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
@@ -43,11 +43,10 @@
             border: 4px solid #fff;
             border-radius: 20px;
             box-shadow: 0 6px 10px rgba(0,0,0,0.1);
-            width: 250px; /* 画像に合わせて少し大きく */
-            padding: 10px;
+            width: 260px;
+            padding: 12px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            overflow: hidden; /* 画像がはみ出ないように */
         }
 
         /* ホバー・クリック時の動き */
@@ -60,61 +59,46 @@
             transform: scale(0.95);
         }
 
-        /* 生成画像を表示するためのスタイル */
-        .card-image-container {
-            width: 100%;
-            height: 180px; /* カード内の画像表示エリアの高さ */
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 15px; /* 画像も角丸に */
-        }
-
+        /* 各画像の表示サイズ制限 */
         .card-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain; /* 画像を枠内に収める */
-        }
-
-        /* カードの文字 */
-        .card-text {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #444;
-            display: block;
-            margin-top: 10px;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            object-fit: contain;
         }
 
         /* 選択した結果を表示するエリア */
         #result-area {
             margin-top: 40px;
-            padding: 20px;
+            padding: 25px;
             background-color: #fff;
             border-radius: 20px;
             border: 3px dashed #ffb6c1;
             display: inline-block;
-            min-width: 300px;
+            min-width: 320px;
         }
 
         .result-title {
             font-size: 1.2rem;
             color: #ff69b4;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-weight: bold;
         }
 
         .result-content {
             font-size: 1.8rem;
             font-weight: bold;
             color: #333;
+            margin-bottom: 15px;
         }
 
-        /* 結果エリアの画像表示 */
+        /* 結果エリア用の画像サイズ */
         .result-image {
-            max-width: 150px;
-            max-height: 150px;
-            margin-top: 10px;
-            object-fit: contain;
+            max-width: 200px;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+            margin: 0 auto;
         }
 
         /* ボタンのデザイン */
@@ -122,12 +106,13 @@
             background-color: #ff7f50;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 25px;
             font-size: 1.2rem;
             border-radius: 10px;
             cursor: pointer;
             margin-top: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-weight: bold;
         }
         .btn:hover { background-color: #ff6347; }
         
@@ -141,127 +126,68 @@
     <p class="subtitle" id="sub-title">あてはまるものを えらんでね</p>
 
     <div id="emotion-screen" class="card-container">
-        <div class="card" onclick="selectEmotion('うれしい', 'happy')">
-            <div class="card-image-container">
-                <img src="image_0.png" alt="うれしい" class="card-image" style="object-position: -5px -5px; transform: scale(1.1);">
-            </div>
-            <span class="card-text">うれしい</span>
+        <div class="card" onclick="selectEmotion('うれしい', 'image0.png')">
+            <img src="image0.png" alt="うれしい" class="card-image">
         </div>
-        <div class="card" onclick="selectEmotion('かなしい', 'sad')">
-            <div class="card-image-container">
-                <img src="image_0.png" alt="かなしい" class="card-image" style="object-position: -270px -5px; transform: scale(1.1);">
-            </div>
-            <span class="card-text">かなしい</span>
+        <div class="card" onclick="selectEmotion('おちつく', 'image1.png')">
+            <img src="image1.png" alt="おちつく" class="card-image">
         </div>
-        <div class="card" onclick="selectEmotion('おこってる', 'angry')">
-            <div class="card-image-container">
-                <img src="image_0.png" alt="おこってる" class="card-image" style="object-position: -535px -5px; transform: scale(1.1);">
-            </div>
-            <span class="card-text">おこってる</span>
+        <div class="card" onclick="selectEmotion('やったー', 'image2.png')">
+            <img src="image2.png" alt="やったー" class="card-image">
         </div>
-    </div>
-
-    <div id="action-screen" class="card-container hidden">
-        <div class="card" onclick="selectAction('ごはんを たべたい', 'eat')">
-            <div class="card-image-container">
-                <img src="image_0.png" alt="たべたい" class="card-image" style="object-position: -5px -270px; transform: scale(1.1);">
-            </div>
-            <span class="card-text">たべたい</span>
+        <div class="card" onclick="selectEmotion('かなしい', 'image3.png')">
+            <img src="image3.png" alt="かなしい" class="card-image">
         </div>
-        <div class="card" onclick="selectAction('おもちゃで あそびたい', 'play')">
-            <div class="card-image-container">
-                <img src="image_0.png" alt="あそびたい" class="card-image" style="object-position: -270px -270px; transform: scale(1.1);">
-            </div>
-            <span class="card-text">あそびたい</span>
+        <div class="card" onclick="selectEmotion('いらいら', 'image4.png')">
+            <img src="image4.png" alt="いらいら" class="card-image">
         </div>
-        <div class="card" onclick="selectAction('おやすみしたい', 'sleep')">
-            <div class="card-image-container">
-                <img src="image_0.png" alt="ねたい" class="card-image" style="object-position: -535px -270px; transform: scale(1.1);">
-            </div>
-            <span class="card-text">ねたい</span>
+        <div class="card" onclick="selectEmotion('もやもや', 'image5.png')">
+            <img src="image5.png" alt="もやもや" class="card-image">
         </div>
     </div>
 
     <div id="result-area">
-        <div class="result-title">あなたがつたえたいこと</div>
-        <div id="result-text" class="result-content">まだえらんでいないよ</div>
-        <div id="result-images" class="hidden">
-            <img id="result-emotion-img" src="image_0.png" class="result-image">
-            <img id="result-action-img" src="image_0.png" class="result-image hidden">
-        </div>
+        <div class="result-title">いまの きもち</div>
+        <div id="result-text" class="result-content">まだ えらんでいないよ</div>
+        <img id="result-img" class="result-image hidden" src="" alt="えらんだきもち">
         <button id="reset-btn" class="btn hidden" onclick="resetApp()">もういちど えらぶ</button>
     </div>
 
     <script>
-        // 選択された内容を記憶する変数
-        let chosenEmotionText = "";
-        let chosenActionText = "";
-
-        // 画像の切り抜き位置を定義（生成画像に合わせて調整）
-        const imagePositions = {
-            'happy': '-5px -5px',
-            'sad': '-270px -5px',
-            'angry': '-535px -5px',
-            'eat': '-5px -270px',
-            'play': '-270px -270px',
-            'sleep': '-535px -270px'
-        };
-
-        // 1. きもちを選んだときの処理
-        function selectEmotion(emotionText, emotionKey) {
-            chosenEmotionText = emotionText;
-
-            // 結果エリアにテキストを表示
-            document.getElementById('result-text').innerHTML = `【${emotionText}】`;
-            
-            // 結果エリアに画像を表示
-            const emotionImg = document.getElementById('result-emotion-img');
-            emotionImg.style.objectPosition = imagePositions[emotionKey];
-            document.getElementById('result-images').classList.remove('hidden');
-            document.getElementById('result-action-img').classList.add('hidden'); // 行動画像は隠す
-
-            // 画面を切り替えて「やりたいこと」を選ばせる
-            setTimeout(() => {
-                document.getElementById('main-title').innerText = "なにを したいのかな？";
-                document.getElementById('sub-title').innerText = "あてはまるイラストを えらんでね";
-                document.getElementById('emotion-screen').classList.add('hidden');
-                document.getElementById('action-screen').classList.remove('hidden');
-            }, 600); // クリック感を味わってもらうため少しだけディレイ
-        }
-
-        // 2. やりたいことを選んだときの処理
-        function selectAction(actionText, actionKey) {
-            chosenActionText = actionText;
-            
-            // 最終的なタイトルを表示
+        // カードを選んだときの処理
+        function selectEmotion(emotionText, imageSrc) {
+            // タイトル文字の変更
             document.getElementById('main-title').innerText = "おしえてくれて ありがとう！";
             document.getElementById('sub-title').innerText = "";
-            document.getElementById('action-screen').classList.add('hidden');
-            
-            // 結果を画面に表示
-            document.getElementById('result-text').innerHTML = `いま 【${chosenEmotionText}】 から、<br>【${actionText}】`;
-            
-            // 結果エリアの行動画像を表示
-            const actionImg = document.getElementById('result-action-img');
-            actionImg.style.objectPosition = imagePositions[actionKey];
-            actionImg.classList.remove('hidden');
 
+            // 選択したテキストと画像を結果エリアに表示
+            document.getElementById('result-text').innerHTML = `【${emotionText}】`;
+            
+            const resultImg = document.getElementById('result-img');
+            resultImg.src = imageSrc;
+            resultImg.classList.remove('hidden');
+
+            // カード選択一覧を隠す
+            document.getElementById('emotion-screen').classList.add('hidden');
+            
+            // もう一度選ぶボタンを表示
             document.getElementById('reset-btn').classList.remove('hidden');
         }
 
-        // 3. 最初に戻る処理
+        // 最初に戻る処理（リセット）
         function resetApp() {
-            chosenEmotionText = "";
-            chosenActionText = "";
-            
             document.getElementById('main-title').innerText = "いまの きもちは どれかな？";
             document.getElementById('sub-title').innerText = "あてはまるものを えらんでね";
-            document.getElementById('result-text').innerText = "まだえらんでいないよ";
+            document.getElementById('result-text').innerText = "まだ えらんでいないよ";
             
+            // 画像を非表示にしてソースを空にする
+            const resultImg = document.getElementById('result-img');
+            resultImg.classList.add('hidden');
+            resultImg.src = "";
+            
+            // 画面の表示切り替え
             document.getElementById('emotion-screen').classList.remove('hidden');
-            document.getElementById('action-screen').classList.add('hidden');
-            document.getElementById('result-btn').classList.add('hidden');
-            document.getElementById('result-images').classList.add('hidden');
+            document.getElementById('reset-btn').classList.add('hidden');
         }
     </script>
 </body>
