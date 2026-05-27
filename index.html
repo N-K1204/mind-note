@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>きもち・こうどう カード</title>
+    <style>
+        /* 全体のデザイン調整 */
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            user-select: none; /* 誤操作でのテキスト選択を防止 */
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* カードを並べるエリア */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* カード1枚のデザイン */
+        .card {
+            background-color: white;
+            border: 4px solid #fff;
+            border-radius: 20px;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.1);
+            width: 200px;
+            padding: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        /* ホバー・クリック時の動き */
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .card:active {
+            transform: scale(0.95);
+        }
+
+        /* 絵文字（イラストの代わり）のサイズ */
+        .card-emoji {
+            font-size: 5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* カードの文字 */
+        .card-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #444;
+            display: block;
+        }
+
+        /* 選択した結果を表示するエリア */
+        #result-area {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 20px;
+            border: 3px dashed #ffb6c1;
+            display: inline-block;
+            min-width: 300px;
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            color: #ff69b4;
+            margin-bottom: 10px;
+        }
+
+        .result-content {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* ボタンのデザイン */
+        .btn {
+            background-color: #ff7f50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn:hover { background-color: #ff6347; }
+        
+        /* 非表示用クラス */
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <h1 id="main-title">いまの きもちは どれかな？</h1>
+    <p class="subtitle" id="sub-title">あてはまるものを えらんでね</p>
+
+    <div id="emotion-screen" class="card-container">
+        <div class="card" onclick="selectEmotion('うれしい', '😊')">
+            <span class="card-emoji">😊</span>
+            <span class="card-text">うれしい</span>
+        </div>
+        <div class="card" onclick="selectEmotion('かなしい', '😢')">
+            <span class="card-emoji">😢</span>
+            <span class="card-text">かなしい</span>
+        </div>
+        <div class="card" onclick="selectEmotion('おこってる', '😠')">
+            <span class="card-emoji">😠</span>
+            <span class="card-text">おこってる</span>
+        </div>
+        <div class="card" onclick="selectEmotion('つかれた', '🥱')">
+            <span class="card-emoji">🥱</span>
+            <span class="card-text">つかれた</span>
+        </div>
+        <div class="card" onclick="selectEmotion('たのしい', '😆')">
+            <span class="card-emoji">😆</span>
+            <span class="card-text">たのしい</span>
+        </div>
+        <div class="card" onclick="selectEmotion('こまっている', '😥')">
+            <span class="card-emoji">😥</span>
+            <span class="card-text">こまってる</span>
+        </div>
+    </div>
+
+    <div id="action-screen" class="card-container hidden">
+        <div class="card" onclick="selectAction('ごはんを たべたい', '🍙')">
+            <span class="card-emoji">🍙</span>
+            <span class="card-text">ごはん</span>
+        </div>
+        <div class="card" onclick="selectAction('みずを のみたい', '🥛')">
+            <span class="card-emoji">🥛</span>
+            <span class="card-text">おみず</span>
+        </div>
+        <div class="card" onclick="selectAction('トイレに いきたい', '🚽')">
+            <span class="card-emoji">🚽</span>
+            <span class="card-text">トイレ</span>
+        </div>
+        <div class="card" onclick="selectAction('おもちゃで あそびたい', '🧸')">
+            <span class="card-emoji">🧸</span>
+            <span class="card-text">あそびたい</span>
+        </div>
+        <div class="card" onclick="selectAction('テレビを みたい', '📺')">
+            <span class="card-emoji">📺</span>
+            <span class="card-text">テレビ</span>
+        </div>
+        <div class="card" onclick="selectAction('おやすみしたい', '🛏️')">
+            <span class="card-emoji">🛏️</span>
+            <span class="card-text">ねたい</span>
+        </div>
+    </div>
+
+    <div id="result-area">
+        <div class="result-title">あなたがつたえたいこと</div>
+        <div id="result-text" class="result-content">まだえらんでいないよ</div>
+        <button id="reset-btn" class="btn hidden" onclick="resetApp()">もういちど えらぶ</button>
+    </div>
+
+    <script>
+        // 選択された内容を記憶する変数
+        let chosenEmotion = "";
+        let chosenAction = "";
+
+        // 音声読み上げ関数
+        function speak(text) {
+            // ブラウザが音声合成に対応しているか確認
+            if ('speechSynthesis' in window) {
+                // 再生中の音声を停止
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ja-JP'; // 日本語に設定
+                utterance.rate = 1.0;     // 話す速度（0.5〜2.0）
+                utterance.pitch = 1.2;    // 声の高さ（子ども向けに少し高めに設定）
+                
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // 1. きもちを選んだときの処理
+        function selectEmotion(emotion, emoji) {
+            chosenEmotion = emotion;
+            speak(emotion); // 音声を流す
+
+            // 結果エリアに一時表示
+            document.getElementById('result-text').innerHTML = `${emoji} 【${emotion}】`;
+
+            // 画面を切り替えて「やりたいこと」を選ばせる
+            setTimeout(() => {
+                document.getElementById('main-title').innerText = "なにを したいのかな？";
+                document.getElementById('emotion-screen').classList.add('hidden');
+                document.getElementById('action-screen').classList.remove('hidden');
+            }, 600); // クリック感を味わってもらうため少しだけディレイ
+        }
+
+        // 2. やりたいことを選んだときの処理
+        function selectAction(action, emoji) {
+            chosenAction = action;
+            
+            // 最終的な文章を作成
+            const finalSentence = `いま ${chosenEmotion} から、 ${chosenAction}`;
+            speak(finalSentence); // 文章を読み上げる
+
+            // 結果を画面に表示
+            document.getElementById('main-title').innerText = "おしえてくれて ありがとう！";
+            document.getElementById('sub-title').innerText = "";
+            document.getElementById('action-screen').classList.add('hidden');
+            
+            document.getElementById('result-text').innerHTML = `いま 【${chosenEmotion}】 から、<br>【${action}】`;
+            document.getElementById('reset-btn').classList.remove('hidden');
+        }
+
+        // 3. 最初に戻る処理
+        function resetApp() {
+            chosenEmotion = "";
+            chosenAction = "";
+            
+            document.getElementById('main-title').innerText = "いまの きもちは どれかな？";
+            document.getElementById('sub-title').innerText = "あてはまるものを えらんでね";
+            document.getElementById('result-text').innerText = "まだえらんでいないよ";
+            
+            document.getElementById('emotion-screen').classList.remove('hidden');
+            document.getElementById('action-screen').classList.add('hidden');
+            document.getElementById('reset-btn').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
