@@ -10,11 +10,13 @@
 
     <div class="game-container">
         
+        <!-- ポップな12時間時計 -->
         <div class="nintendo-clock">
             <span id="clock-period" class="badge-period">ごぜん</span>
             <span id="digital-clock" class="text-clock">00:00:00</span>
         </div>
 
+        <!-- プレイヤーのステータス -->
         <div class="player-status-bar">
             <div class="status-item"><span class="status-icon">⭐</span> レベル: <span id="player-level">1</span></div>
             <div class="status-item"><span class="status-icon">🪙</span> コイン: <span id="player-coins">0</span></div>
@@ -26,12 +28,13 @@
             <p class="game-subtitle">どこに ぼうけんに いこうかな？</p>
         </header>
 
+        <!-- メニューセレクト -->
         <main class="nintendo-menu">
             <a href="game.html" class="nintendo-btn btn-yellow">
                 <span class="btn-icon">🎮</span>
                 <span class="btn-content">
                     <span class="btn-title">アクションゲーム</span>
-                    <span class="btn-subtext">ステージを えらんで ぼうけんだ！</span>
+                    <span class="btn-subtext">全6ステージ！えらんで ぼうけんだ！</span>
                 </span>
             </a>
 
@@ -47,7 +50,7 @@
                 <span class="btn-icon">🧠</span>
                 <span class="btn-content">
                     <span class="btn-title">クイズトレーニング</span>
-                    <span class="btn-subtext">おはなしを クリアして レベルアップ！</span>
+                    <span class="btn-subtext">全6話のおはなしを クリアしよう！</span>
                 </span>
             </a>
 
@@ -97,7 +100,7 @@
             document.getElementById('clock-period').innerText = period;
         }
         
-        setInterval(updateClock, 1000);
+            setInterval(updateClock, 1000);
         updateClock(); 
         loadStatus();
     </script>
