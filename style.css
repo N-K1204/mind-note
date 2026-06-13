@@ -62,6 +62,7 @@ html, body {
 .btn-yellow { background: #ffa502; }
 .btn-blue { background: #1e90ff; }
 .btn-green { background: #2ed573; }
+.btn-purple { background: #9b59b6; } /* パズル用のむらさき */
 
 .nintendo-btn:active { transform: translateY(10px); box-shadow: none; }
 
