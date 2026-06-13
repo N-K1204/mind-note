@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>きもちボード - 点つつなぎパズル</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #puzzle-canvas { background: #ffffff; border: 5px solid #000; border-radius: 24px; display: block; margin: 0 auto; box-shadow: 0 10px 0 #000; cursor: pointer; touch-action: none; }
+        .puzzle-info { text-align: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="nav-area">
+            <a href="index.html" class="nintendo-back-btn">🏠 ホーム画面にもどる</a>
+        </div>
+
+        <div id="line-menu-screen" class="nintendo-quiz-box">
+            <h2 class="game-title" style="color:#000; text-align:center; margin-bottom:20px;">✏️ ステージを えらぼう！</h2>
+            <div class="stage-grid">
+                <button class="stage-select-card" onclick="startPuzzleStage(1)">
+                    <img src="./image1.png" alt="1">
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">ステージ1：かんたん（2色）</span></span>
+                </button>
+                <button class="stage-select-card" onclick="startPuzzleStage(2)">
+                    <img src="./image5.png" alt="2">
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">ステージ2：ふつう（3色）</span></span>
+                </button>
+                <button class="stage-select-card" onclick="startPuzzleStage(3)">
+                    <img src="./image4.png" alt="3">
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">ステージ3：むずかしい（4色クロス）</span></span>
+                </button>
+            </div>
+        </div>
+
+        <div id="line-play-screen" class="hidden">
+            <div class="nintendo-quiz-box">
+                <button class="nintendo-action-btn reset-action" onclick="backToPuzzleMenu()" style="padding: 10px 20px; font-size: 1.1rem; width: auto; margin-bottom: 15px;">⬅️ ステージをえらびなおす</button>
+                
+                <div class="puzzle-info">🎨 つなぐ色: <span id="current-target-color-text" style="font-weight:900;">えらんでね</span></div>
+                <div id="puzzle-message" style="color:#ff4757; font-weight:bold; text-align:center; margin-bottom:10px;"></div>
+
+                <canvas id="puzzle-canvas" width="500" height="350"></canvas>
+
+                <div class="nintendo-control-area">
+                    <button class="nintendo-action-btn reset-action" onclick="resetCurrentStage()">はじめからひきなおす 🔄</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var canvas = document.getElementById("puzzle-canvas");
+        var ctx = canvas.getContext("2d");
+        
+        var currentStage = 1;
+        var isDrawing = false;
+        var activeColor = null;
+        var userLines = {}; // 各色がひいた線の座標配列
+        var completedColors = []; // クリア済みの色リスト
+
+        // 各ステージの点（スタートとゴール）のデータ定義
+        var stagePoints = {
+            1: [
+                { id: "A1", x: 100, y: 100, color: "#ff4757", name: "赤", matched: false },
+                { id: "A2", x: 400, y: 100, color: "#ff4757", name: "赤", matched: false },
+                { id: "B1", x: 100, y: 250, color: "#1e90ff", name: "青", matched: false },
+                { id: "B2", x: 400, y: 250, color: "#1e90ff", name: "青", matched: false }
+            ],
+            2: [
+                { id: "A1", x: 80,  y: 80,  color: "#ff4757", name: "赤", matched: false },
+                { id: "A2", x: 420, y: 270, color: "#ff4757", name: "赤", matched: false },
+                { id: "B1", x: 420, y: 80,  color: "#1e90ff", name: "青", matched: false },
+                { id: "B2", x: 80,  y: 270, color: "#1e90ff", name: "青", matched: false },
+                { id: "C1", x: 250, y: 100, color: "#2ed573", name: "緑", matched: false },
+                { id: "C2", x: 250, y: 250, color: "#2ed573", name: "緑", matched: false }
+            ],
+            3: [
+                { id: "A1", x: 80,  y: 80,  color: "#ff4757", name: "赤", matched: false },
+                { id: "A2", x: 420, y: 80,  color: "#ff4757", name: "赤", matched: false },
+                { id: "B1", x: 80,  y: 180, color: "#1e90ff", name: "青", matched: false },
+                { id: "B2", x: 420, y: 180, color: "#1e90ff", name: "青", matched: false },
+                { id: "C1", x: 80,  y: 280, color: "#2ed573", name: "緑", matched: false },
+                { id: "C2", x: 420, y: 280, color: "#2ed573", name: "緑", matched: false },
+                { id: "D1", x: 250, y: 50,  color: "#ffa502", name: "オレンジ", matched: false },
+                { id: "D2", x: 250, y: 300, color: "#ffa502", name: "オレンジ", matched: false }
+            ]
+        };
+
+        var currentPoints = [];
+
+        function startPuzzleStage(stageNum) {
+            currentStage = stageNum;
+            document.getElementById('line-menu-screen').classList.add('hidden');
+            document.getElementById('line-play-screen').classList.remove('hidden');
+            resetCurrentStage();
+        }
+
+        function resetCurrentStage() {
+            isDrawing = false;
+            activeColor = null;
+            completedColors = [];
+            userLines = {};
+            document.getElementById('puzzle-message').innerText = "";
+            document.getElementById('current-target-color-text').innerText = "丸い点をえらんでね";
+            document.getElementById('current-target-color-text').style.color = "#2c3e50";
+
+            // 点データのディープコピー
+            currentPoints = JSON.parse(JSON.stringify(stagePoints[currentStage]));
+            currentPoints.forEach(function(pt) {
+                userLines[pt.color] = [];
+            });
+
+            drawPuzzle();
+        }
+
+        function drawPuzzle() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. 引かれた線を描画
+            Object.keys(userLines).forEach(function(color) {
+                var points = userLines[color];
+                if (points.length > 0) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 12;
+                    ctx.lineCap = "round";
+                    ctx.lineJoin = "round";
+                    ctx.moveTo(points[0].x, points[0].y);
+                    for (var i = 1; i < points.length; i++) {
+                        ctx.lineTo(points[i].x, points[i].y);
+                    }
+                    ctx.stroke();
+                }
+            });
+
+            // 2. 点（丸ボタン）を描画
+            currentPoints.forEach(function(pt) {
+                ctx.beginPath();
+                ctx.arc(pt.x, pt.y, 22, 0, Math.PI * 2);
+                ctx.fillStyle = pt.color;
+                ctx.fill();
+                ctx.strokeStyle = "#000000";
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                // 中心に白いコア（目印）
+                ctx.beginPath();
+                ctx.arc(pt.x, pt.y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = "#ffffff";
+                ctx.fill();
+            });
+        }
+
+        // マウス・タッチ座標取得共通
+        function getCoords(e) {
+            var rect = canvas.getBoundingClientRect();
+            var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        // 始点タッチ
+        function handleStart(pos) {
+            // クリックした位置が点の中にあるか判定
+            for (var i = 0; i < currentPoints.length; i++) {
+                var pt = currentPoints[i];
+                var dist = Math.sqrt((pos.x - pt.x) ** 2 + (pos.y - pt.y) ** 2);
+                if (dist <= 26) {
+                    // すでにクリア済みの色はひき直せない
+                    if (completedColors.indexOf(pt.color) !== -1) return;
+
+                    isDrawing = true;
+                    activeColor = pt.color;
+                    userLines[activeColor] = [{ x: pt.x, y: pt.y }];
+                    
+                    document.getElementById('current-target-color-text').innerText = pt.name + " をなぞり中！";
+                    document.getElementById('current-target-color-text').style.color = pt.color;
+                    return;
+                }
+            }
+        }
+
+        // なぞり中
+        function handleMove(pos) {
+            if (!isDrawing || !activeColor) return;
+            userLines[activeColor].push({ x: pos.x, y: pos.y });
+            drawPuzzle();
+
+            // 終点（同じ色のもう一つの点）に到達したかリアルタイム判定
+            for (var i = 0; i < currentPoints.length; i++) {
+                var pt = currentPoints[i];
+                if (pt.color === activeColor) {
+                    var startPt = userLines[activeColor][0];
+                    // 始点とは違う、もう片方の同じ色の点に近づいたか
+                    if (pt.x !== startPt.x || pt.y !== startPt.y) {
+                        var dist = Math.sqrt((pos.x - pt.x) ** 2 + (pos.y - pt.y) ** 2);
+                        if (dist <= 26) {
+                            userLines[activeColor].push({ x: pt.x, y: pt.y });
+                            if (completedColors.indexOf(activeColor) === -1) {
+                                completedColors.push(activeColor);
+                            }
+                            isDrawing = false;
+                            activeColor = null;
+                            document.getElementById('current-target-color-text').innerText = "つながった！✨";
+                            document.getElementById('current-target-color-text').style.color = "#2ed573";
+                            checkPuzzleClear();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 離したとき（途中で離したら失敗でリセット）
+        function handleEnd() {
+            if (!isDrawing) return;
+            isDrawing = false;
+            if (activeColor && completedColors.indexOf(activeColor) === -1) {
+                userLines[activeColor] = []; // 途中断念は線を消す
+                document.getElementById('current-target-color-text').innerText = "とちゅうではなしたら ダメだよ 🛑";
+                document.getElementById('current-target-color-text').style.color = "#ff4757";
+            }
+            activeColor = null;
+            drawPuzzle();
+        }
+
+        function checkPuzzleClear() {
+            // すべての色がつながったか
+            var totalColors = currentPoints.length / 2;
+            if (completedColors.length === totalColors) {
+                document.getElementById('puzzle-message').innerText = "🎉 ステージクリア！";
+                
+                // コインご褒美システム
+                var currentCoins = parseInt(localStorage.getItem('game_coins') || 0);
+                localStorage.setItem('game_coins', currentCoins + 15); // 15コイン付与
+
+                setTimeout(function() {
+                    alert("😊 すべての点がつながりました！コインを15枚ゲット！");
+                    backToPuzzleMenu();
+                }, 400);
+            }
+        }
+
+        function backToPuzzleMenu() {
+            document.getElementById('line-play-screen').classList.add('hidden');
+            document.getElementById('line-menu-screen').classList.remove('hidden');
+        }
+
+        // イベントリスナー登録（マウス＆スマホタッチ両対応）
+        canvas.addEventListener("mousedown", function(e) { handleStart(getCoords(e)); });
+        canvas.addEventListener("mousemove", function(e) { handleMove(getCoords(e)); });
+        window.addEventListener("mouseup", handleEnd);
+
+        canvas.addEventListener("touchstart", function(e) { e.preventDefault(); handleStart(getCoords(e)); }, { passive: false });
+        canvas.addEventListener("touchmove", function(e) { e.preventDefault(); handleMove(getCoords(e)); }, { passive: false });
+        window.addEventListener("touchend", handleEnd);
+
+    </script>
+</body>
+</html>
