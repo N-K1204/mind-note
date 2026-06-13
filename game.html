@@ -19,30 +19,38 @@
             <a href="index.html" class="nintendo-back-btn">🏠 ホーム画面にもどる</a>
         </div>
 
+        <!-- 全6ステージ選択のワールドマップ -->
         <div id="stage-select-screen" class="nintendo-quiz-box">
             <h2 class="nintendo-summoned-text" style="color:#000; text-shadow:none; text-align:center; margin-bottom:20px;">🗺️ ステージを えらぼう！</h2>
             <div class="stage-grid">
                 <button class="stage-select-card" onclick="startStage(1)">
                     <img src="./image0.png" alt="1">
-                    <span class="stage-select-text-block">
-                        <span class="stage-select-main-title">1話：はじまりの平原</span>
-                    </span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">1話：はじまりの平原（やさしい）</span></span>
                 </button>
                 <button id="stage2-btn" class="stage-select-card" onclick="startStage(2)" style="background:#ced6e0; opacity:0.5;">
                     <img src="./image4.png" alt="2">
-                    <span class="stage-select-text-block">
-                        <span class="stage-select-main-title">2話：いらいら火山 (要Lv2)</span>
-                    </span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">2話：いらいら火山（はしる敵）</span></span>
                 </button>
                 <button id="stage3-btn" class="stage-select-card" onclick="startStage(3)" style="background:#ced6e0; opacity:0.5;">
                     <img src="./image11.png" alt="3">
-                    <span class="stage-select-text-block">
-                        <span class="stage-select-main-title">3話：おしごと城 (要Lv3)</span>
-                    </span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">3話：おしごと城（うごく床）</span></span>
+                </button>
+                <button id="stage4-btn" class="stage-select-card" onclick="startStage(4)" style="background:#ced6e0; opacity:0.5;">
+                    <img src="./image8.png" alt="4">
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">4話：びょういんの雲（高い足場）</span></span>
+                </button>
+                <button id="stage5-btn" class="stage-select-card" onclick="startStage(5)" style="background:#ced6e0; opacity:0.5;">
+                    <img src="./image7.png" alt="5">
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">5話：もやもや地下（おばけの敵）</span></span>
+                </button>
+                <button id="stage6-btn" class="stage-select-card" onclick="startStage(6)" style="background:#ced6e0; opacity:0.5;">
+                    <img src="./image2.png" alt="6">
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">6話：ファイナルスター（超ロング）</span></span>
                 </button>
             </div>
         </div>
 
+        <!-- ゲーム画面 -->
         <div id="game-play-screen" class="hidden">
             <div class="player-status-bar" style="margin-bottom:10px;">
                 <div>コイン: <span id="game-coin-count">0</span> 🪙</div>
@@ -67,13 +75,13 @@
         var currentStage = 1;
         
         var cameraX = 0;
-        var worldWidth = 1500; 
+        var worldWidth = 2000; // さらに長い超ロングステージ仕様に拡張
 
         var player = { x: 50, y: 200, width: 32, height: 44, vx: 0, vy: 0, isJumping: false };
         var coins = [];
         var enemies = [];
         var platforms = []; 
-        var goal = { x: 1420, y: 190, width: 20, height: 70 }; 
+        var goal = { x: 1920, y: 190, width: 20, height: 70 }; 
         var collectedInStage = 0;
 
         var speedModifier = 1;
@@ -83,83 +91,68 @@
         function applyEquipment() {
             var eq = localStorage.getItem('game_equipped') || "none";
             var buffText = "そうび効果: なし";
-            speedModifier = 1;
-            jumpModifier = 0;
-            coinMultiplier = 1;
+            speedModifier = 1; jumpModifier = 0; coinMultiplier = 1;
 
-            if (eq === "crown") {
-                coinMultiplier = 2;
-                buffText = "👑 クラウン：コイン獲得量2倍！";
-            } else if (eq === "leaf") {
-                jumpModifier = 3;
-                buffText = "🍃 木の葉：ジャンプ力がアップ！";
-            } else if (eq === "ramen") {
-                speedModifier = 1.6;
-                buffText = "🍜 ラーメン：移動スピードがアップ！";
-            }
+            if (eq === "crown") { coinMultiplier = 2; buffText = "👑 クラウン：コイン2倍！"; }
+            else if (eq === "leaf") { jumpModifier = 3.5; buffText = "🍃 木の葉：ジャンプ大強化！"; }
+            else if (eq === "ramen") { speedModifier = 1.6; buffText = "🍜 ラーメン：スピード超高速！"; }
             document.getElementById('game-buff-status').innerText = buffText;
         }
 
         function checkLocks() {
             var lvl = parseInt(localStorage.getItem('game_level') || 1);
-            if(lvl >= 2) {
-                document.getElementById('stage2-btn').style.background = "#fff";
-                document.getElementById('stage2-btn').style.opacity = "1";
-            }
-            if(lvl >= 3) {
-                document.getElementById('stage3-btn').style.background = "#fff";
-                document.getElementById('stage3-btn').style.opacity = "1";
+            for(var i = 2; i <= 6; i++) {
+                var btn = document.getElementById('stage' + i + '-btn');
+                if(btn && lvl >= i) { btn.style.background = "#fff"; btn.style.opacity = "1"; }
             }
         }
 
         function startStage(stageNum) {
             var lvl = parseInt(localStorage.getItem('game_level') || 1);
-            if(stageNum === 2 && lvl < 2) { alert("レベルを2にしてね！"); return; }
-            if(stageNum === 3 && lvl < 3) { alert("レベルを3にしてね！"); return; }
+            if(stageNum > lvl) { alert("レベルが足りないよ！クイズか前の話をクリアしてね！"); return; }
 
             currentStage = stageNum;
             document.getElementById('stage-select-screen').classList.add('hidden');
             document.getElementById('game-play-screen').classList.remove('hidden');
             
-            player.x = 50; player.y = 200; player.vx = 0; player.vy = 0;
-            cameraX = 0;
-            collectedInStage = 0;
+            player.x = 50; player.y = 200; player.vx = 0; player.vy = 0; cameraX = 0; collectedInStage = 0;
             document.getElementById('game-coin-count').innerText = collectedInStage;
             document.getElementById('game-message').innerText = "";
 
             applyEquipment();
 
+            // ステージごとの固有の敵・地形・コイン配置（バリエーション豊富に）
+            platforms = [];
             if (currentStage === 1) {
-                canvas.style.backgroundColor = "#74b9ff"; 
-                coins = [{x:200,y:180},{x:400,y:140},{x:600,y:180},{x:800,y:120},{x:1000,y:180},{x:1200,y:140}];
-                enemies = [
-                    {x: 300, y: 226, vx: -1.2, width: 32, height: 32, color: "#5758bb"},
-                    {x: 700, y: 226, vx: -1.0, width: 32, height: 32, color: "#5758bb"},
-                    {x: 1100, y: 226, vx: -1.5, width: 32, height: 32, color: "#5758bb"}
-                ];
-                platforms = [];
+                canvas.style.backgroundColor = "#74b9ff";
+                coins = [{x:200,y:180},{x:500,y:140},{x:900,y:180},{x:1300,y:120}];
+                enemies = [{x:350,y:226,vx:-1.2,width:32,height:32,color:"#5758bb"},{x:850,y:226,vx:-1,width:32,height:32,color:"#5758bb"}];
             } else if (currentStage === 2) {
-                canvas.style.backgroundColor = "#ff7675"; 
-                coins = [{x:250,y:120},{x:500,y:100},{x:750,y:120},{x:900,y:150},{x:1150,y:100}];
-                enemies = [
-                    {x: 350, y: 226, vx: -2.8, width: 32, height: 32, color: "#ea2027"}, 
-                    {x: 650, y: 226, vx: -3.0, width: 32, height: 32, color: "#ea2027"},
-                    {x: 950, y: 226, vx: -2.5, width: 32, height: 32, color: "#ea2027"},
-                    {x: 1250, y: 226, vx: -3.5, width: 32, height: 32, color: "#ea2027"}
-                ];
-                platforms = [];
+                canvas.style.backgroundColor = "#ff7675"; // 火山
+                coins = [{x:300,y:100},{x:700,y:120},{x:1100,y:100},{x:1500,y:120}];
+                enemies = [{x:400,y:226,vx:-3,width:32,height:32,color:"#ea2027"},{x:1000,y:226,vx:-3.5,width:32,height:32,color:"#ea2027"}];
             } else if (currentStage === 3) {
-                canvas.style.backgroundColor = "#2c3e50"; 
-                coins = [{x:150,y:140},{x:450,y:80},{x:700,y:120},{x:950,y:70},{x:1200,y:120}];
-                enemies = [
-                    {x: 250, y: 226, vx: -1.5, width: 32, height: 32, color: "#1e272e"},
-                    {x: 550, y: 126, vx: -2.0, width: 32, height: 32, color: "#1e272e"},
-                    {x: 850, y: 226, vx: -1.8, width: 32, height: 32, color: "#1e272e"}
-                ];
+                canvas.style.backgroundColor = "#2c3e50"; // お城
+                coins = [{x:200,y:120},{x:600,y:100},{x:1000,y:120},{x:1400,y:100}];
+                enemies = [{x:450,y:226,vx:-1.5,width:32,height:32,color:"#1e272e"}];
                 platforms = [
                     {x: 400, y: 160, width: 100, height: 20, direction: 1, range: 80, startX: 400},
-                    {x: 900, y: 140, width: 120, height: 20, direction: 1, range: 100, startX: 900}
+                    {x: 900, y: 140, width: 120, height: 20, direction: -1, range: 100, startX: 900}
                 ];
+            } else if (currentStage === 4) {
+                canvas.style.backgroundColor = "#a8e6cf"; // 病院の雲の上
+                coins = [{x:300,y:60},{x:600,y:60},{x:900,y:60},{x:1300,y:60}];
+                enemies = [{x:500,y:226,vx:-2,width:32,height:32,color:"#22a6b3"}];
+                platforms = [{x:250,y:140,width:100,height:20,direction:0,range:0,startX:250},{x:550,y:110,width:100,height:20,direction:0,range:0,startX:550},{x:850,y:140,width:100,height:20,direction:0,range:0,startX:850}];
+            } else if (currentStage === 5) {
+                canvas.style.backgroundColor = "#6c5ce7"; // もやもやパープル地下
+                coins = [{x:200,y:180},{x:500,y:150},{x:800,y:180},{x:1200,y:150},{x:1600,y:180}];
+                enemies = [{x:300,y:226,vx:-2.2,width:32,height:32,color:"#3d3d3d"},{x:750,y:226,vx:-2.5,width:32,height:32,color:"#3d3d3d"},{x:1300,y:226,vx:-2,width:32,height:32,color:"#3d3d3d"}];
+            } else if (currentStage === 6) {
+                canvas.style.backgroundColor = "#222f3e"; // 最終決戦ダーク
+                coins = [{x:200,y:100},{x:400,y:150},{x:700,y:80},{x:1000,y:140},{x:1300,y:90},{x:1600,y:150}];
+                enemies = [{x:300,y:226,vx:-3,width:32,height:32,color:"#ee5253"},{x:600,y:226,vx:-2.8,width:32,height:32,color:"#00d2d3"},{x:1100,y:226,vx:-3.5,width:32,height:32,color:"#ee5253"},{x:1500,y:226,vx:-4,width:32,height:32,color:"#5f27cd"}];
+                platforms = [{x:650,y:150,width:100,height:20,direction:1,range:120,startX:650},{x:1250,y:130,width:100,height:20,direction:-1,range:90,startX:1250}];
             }
             
             if(gameInterval) clearInterval(gameInterval);
@@ -169,34 +162,21 @@
         function moveLeft() { player.vx = -4.5 * speedModifier; }
         function moveRight() { player.vx = 4.5 * speedModifier; }
         function stopMove() { player.vx = 0; }
-        function jump() { 
-            if (!player.isJumping) { 
-                player.vy = -(10.5 + jumpModifier); 
-                player.isJumping = true; 
-            } 
-        }
+        function jump() { if (!player.isJumping) { player.vy = -(10.5 + jumpModifier); player.isJumping = true; } }
 
         function updateGame() {
-            player.vy += 0.52; 
-            player.x += player.vx;
-            player.y += player.vy;
+            player.vy += 0.52; player.x += player.vx; player.y += player.vy;
 
-            if (player.y >= 216) { 
-                player.y = 216; 
-                player.vy = 0; 
-                player.isJumping = false; 
-            }
+            if (player.y >= 216) { player.y = 216; player.vy = 0; player.isJumping = false; }
 
             platforms.forEach(function(plat) {
-                plat.x += plat.direction * 1.5;
-                if (Math.abs(plat.x - plat.startX) > plat.range) {
-                    plat.direction *= -1; 
+                if(plat.range > 0) {
+                    plat.x += plat.direction * 1.5;
+                    if (Math.abs(plat.x - plat.startX) > plat.range) { plat.direction *= -1; }
                 }
                 if (player.x + player.width > plat.x && player.x < plat.x + plat.width) {
                     if (player.vy > 0 && player.y + player.height <= plat.y + 12 && player.y + player.height + player.vy >= plat.y) {
-                        player.y = plat.y - player.height;
-                        player.vy = 0;
-                        player.isJumping = false;
+                        player.y = plat.y - player.height; player.vy = 0; player.isJumping = false;
                     }
                 }
             });
@@ -204,11 +184,8 @@
             if (player.x < 0) player.x = 0;
             if (player.x > worldWidth - player.width) player.x = worldWidth - player.width;
 
-            if (player.x > cameraX + 250) {
-                cameraX = player.x - 250;
-            } else if (player.x < cameraX + 100) {
-                cameraX = player.x - 100;
-            }
+            if (player.x > cameraX + 250) { cameraX = player.x - 250; } 
+            else if (player.x < cameraX + 100) { cameraX = player.x - 100; }
             if (cameraX < 0) cameraX = 0;
             if (cameraX > worldWidth - 550) cameraX = worldWidth - 550;
 
@@ -216,12 +193,9 @@
                 enemy.x += enemy.vx;
                 if(enemy.x < 0 || enemy.x > worldWidth - 50) enemy.vx *= -1;
 
-                if(player.x < enemy.x + enemy.width && player.x + player.width > enemy.x &&
-                   player.y < enemy.y + enemy.height && player.y + player.height > enemy.y) {
-                    
+                if(player.x < enemy.x + enemy.width && player.x + player.width > enemy.x && player.y < enemy.y + enemy.height && player.y + player.height > enemy.y) {
                     if(player.vy > 0 && player.y + player.height - player.vy <= enemy.y + 12) {
-                        enemies.splice(index, 1);
-                        player.vy = -8.5; 
+                        enemies.splice(index, 1); player.vy = -8.5; 
                         var currentCoins = parseInt(localStorage.getItem('game_coins') || 0);
                         var reward = 5 * coinMultiplier;
                         localStorage.setItem('game_coins', currentCoins + reward);
@@ -235,8 +209,7 @@
             });
 
             coins.forEach(function(coin, index) {
-                if(player.x < coin.x + 20 && player.x + player.width > coin.x &&
-                   player.y < coin.y + 20 && player.y + player.height > coin.y) {
+                if(player.x < coin.x + 20 && player.x + player.width > coin.x && player.y < coin.y + 20 && player.y + player.height > coin.y) {
                     coins.splice(index, 1);
                     var currentCoins = parseInt(localStorage.getItem('game_coins') || 0);
                     var reward = 1 * coinMultiplier;
@@ -249,9 +222,7 @@
             if(player.x + player.width >= goal.x) {
                 clearInterval(gameInterval);
                 var currentLvl = parseInt(localStorage.getItem('game_level') || 1);
-                if(currentStage === currentLvl) {
-                    localStorage.setItem('game_level', currentLvl + 1);
-                }
+                if(currentStage === currentLvl) { localStorage.setItem('game_level', currentLvl + 1); }
                 alert("🎉 ステージクリア！レベルアップしたよ！");
                 window.location.href = "index.html";
             }
@@ -261,46 +232,25 @@
 
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.save();
-            ctx.translate(-cameraX, 0); 
+            ctx.save(); ctx.translate(-cameraX, 0); 
 
-            ctx.fillStyle = "#27ae60";
-            ctx.fillRect(0, 260, worldWidth, 60);
-            ctx.fillStyle = "#1e272e";
-            ctx.fillRect(0, 260, worldWidth, 4);
+            ctx.fillStyle = "#27ae60"; ctx.fillRect(0, 260, worldWidth, 60);
+            ctx.fillStyle = "#1e272e"; ctx.fillRect(0, 260, worldWidth, 4);
 
             ctx.fillStyle = "#d35400";
-            platforms.forEach(function(plat) {
-                ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
-                ctx.strokeRect(plat.x, plat.y, plat.width, plat.height);
-            });
+            platforms.forEach(function(plat) { ctx.fillRect(plat.x, plat.y, plat.width, plat.height); ctx.strokeRect(plat.x, plat.y, plat.width, plat.height); });
 
-            ctx.fillStyle = "#7f8c8d";
-            ctx.fillRect(goal.x, goal.y, 6, goal.height);
-            ctx.fillStyle = "#e74c3c";
-            ctx.fillRect(goal.x + 6, goal.y, 30, 20);
+            ctx.fillStyle = "#7f8c8d"; ctx.fillRect(goal.x, goal.y, 6, goal.height);
+            ctx.fillStyle = "#e74c3c"; ctx.fillRect(goal.x + 6, goal.y, 30, 20);
 
-            ctx.fillStyle = "#ff4757";
-            ctx.fillRect(player.x, player.y, player.width, player.height);
-            ctx.strokeStyle = "#000";
-            ctx.lineWidth = 3;
-            ctx.strokeRect(player.x, player.y, player.width, player.height);
-            ctx.fillStyle = "#000";
-            ctx.fillRect(player.x + 20, player.y + 10, 6, 8); 
+            ctx.fillStyle = "#ff4757"; ctx.fillRect(player.x, player.y, player.width, player.height);
+            ctx.strokeStyle = "#000"; ctx.lineWidth = 3; ctx.strokeRect(player.x, player.y, player.width, player.height);
+            ctx.fillStyle = "#000"; ctx.fillRect(player.x + 20, player.y + 10, 6, 8); 
 
             ctx.fillStyle = "#ffd32a";
-            coins.forEach(function(coin) {
-                ctx.beginPath(); 
-                ctx.arc(coin.x + 10, coin.y + 10, 10, 0, Math.PI*2); 
-                ctx.fill();
-                ctx.stroke();
-            });
+            coins.forEach(function(coin) { ctx.beginPath(); ctx.arc(coin.x + 10, coin.y + 10, 10, 0, Math.PI*2); ctx.fill(); ctx.stroke(); });
 
-            enemies.forEach(function(enemy) {
-                ctx.fillStyle = enemy.color;
-                ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-                ctx.strokeRect(enemy.x, enemy.y, enemy.width, enemy.height);
-            });
+            enemies.forEach(function(enemy) { ctx.fillStyle = enemy.color; ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height); ctx.strokeRect(enemy.x, enemy.y, enemy.width, enemy.height); });
 
             ctx.restore();
         }
