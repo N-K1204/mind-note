@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>きもちボード - コインショップ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="nav-area">
+            <a href="index.html" class="nintendo-back-btn">🏠 ホーム画面にもどる</a>
+        </div>
+
+        <div class="player-status-bar" style="margin-bottom: 20px;">
+            <div class="status-item">持っているコイン: <span id="shop-coins">0</span> 🪙</div>
+            <div class="status-item">いまつけてる装備: <span id="shop-equipped-name">なし</span></div>
+        </div>
+
+        <header class="game-header">
+            <h1 class="game-title">🛍️ コインショップ 🛍️</h1>
+            <p class="game-subtitle">ためたコインで そうびを かってパワーアップ！</p>
+        </header>
+
+        <main class="shop-grid">
+            <div class="shop-item-card" id="card-crown">
+                <img src="./image2.png" alt="item">
+                <span class="item-name">👑 スーパーお祝いクラウン</span>
+                <span class="item-effect-desc">効果：ゲーム中のコイン獲得量が【2倍】になるよ！</span>
+                <button class="buy-btn" id="btn-crown" onclick="processItem('crown', 10)">🪙 10枚でかう</button>
+            </div>
+
+            <div class="shop-item-card" id="card-leaf">
+                <img src="./image1.png" alt="item">
+                <span class="item-name">🍃 おちつく木の葉バッジ</span>
+                <span class="item-effect-desc">効果：大ジャンプができるようになるよ！</span>
+                <button class="buy-btn" id="btn-leaf" onclick="processItem('leaf', 20)">🪙 20枚でかう</button>
+            </div>
+
+            <div class="shop-item-card" id="card-ramen">
+                <img src="./image9.png" alt="item">
+                <span class="item-name">🍜 パワーアップラーメン</span>
+                <span class="item-effect-desc">効果：プレイヤーの移動スピードが高速化するよ！</span>
+                <button class="buy-btn" id="btn-ramen" onclick="processItem('ramen', 35)">🪙 35枚でかう</button>
+            </div>
+            
+            <button class="nintendo-action-btn reset-action" onclick="clearEquipment()" style="margin-top:20px;">🛡️ そうびをすべて はずす</button>
+        </main>
+    </div>
+
+    <script>
+        function refreshShop() {
+            var coins = parseInt(localStorage.getItem('game_coins') || 0);
+            document.getElementById('shop-coins').innerText = coins;
+
+            var equipped = localStorage.getItem('game_equipped') || "none";
+            
+            var nameMap = { "none": "なし", "crown": "お祝いクラウン", "leaf": "おちつく木の葉", "ramen": "パワーアップラーメン" };
+            document.getElementById('shop-equipped-name').innerText = nameMap[equipped];
+
+            setupButton('crown', 10);
+            setupButton('leaf', 20);
+            setupButton('ramen', 35);
+        }
+
+        function setupButton(itemId, price) {
+            var btn = document.getElementById('btn-' + itemId);
+            var isOwned = localStorage.getItem('shop_owned_' + itemId) === 'true';
+            var isEquipped = localStorage.getItem('game_equipped') === itemId;
+
+            if (isEquipped) {
+                btn.innerText = "🛡️ そうび中！";
+                btn.style.background = "#2ed573";
+                document.getElementById('card-' + itemId).style.borderColor = "#ffa502";
+            } else if (isOwned) {
+                btn.innerText = "👉 そうびする";
+                btn.style.background = "#1e90ff";
+                document.getElementById('card-' + itemId).style.borderColor = "#000";
+            } else {
+                btn.innerText = "🪙 " + price + "枚でかう";
+                btn.style.background = "#ffa502";
+                document.getElementById('card-' + itemId).style.borderColor = "#000";
+            }
+        }
+
+        function processItem(itemId, price) {
+            var isOwned = localStorage.getItem('shop_owned_' + itemId) === 'true';
+
+            if (isOwned) {
+                localStorage.setItem('game_equipped', itemId);
+                alert("🛡️ アイテムを そうびしたよ！");
+            } else {
+                var currentCoins = parseInt(localStorage.getItem('game_coins') || 0);
+                if (currentCoins >= price) {
+                    localStorage.setItem('game_coins', currentCoins - price);
+                    localStorage.setItem('shop_owned_' + itemId, 'true');
+                    localStorage.setItem('game_equipped', itemId); 
+                    alert("🎉 かったよ！そのままそうびしたよ！");
+                } else {
+                    alert("😢 コインが たらないよ！");
+                }
+            }
+            refreshShop();
+        }
+
+        function clearEquipment() {
+            localStorage.setItem('game_equipped', 'none');
+            alert("🛡️ そうびを はずしたよ！");
+            refreshShop();
+        }
+
+        refreshShop();
+    </script>
+</body>
+</html>
