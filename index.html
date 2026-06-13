@@ -3,257 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ココロノノート</title>
-    <link rel="stylesheet" href="./style.css">
+    <title>きもちボード - ホーム</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="home-bg">
 
     <div class="game-container">
-
-        <div id="title-screen" class="scene active">
-            <h1 class="main-title">ココロノノート</h1>
-            <p class="world-desc">自分の力で進むための、感情を吐き出す場所。</p>
-            <p class="start-guide" onclick="gameStart()">ノートを開く →</p>
+        
+        <div class="nintendo-clock">
+            <span id="clock-period" class="badge-period">ごぜん</span>
+            <span id="digital-clock" class="text-clock">00:00:00</span>
         </div>
 
-        <div id="play-screen" class="scene">
-            <header class="status-area">
-                <div class="status-text">
-                    <span id="current-chapter">第1章：静かなる目覚め</span>
-                    <span class="self-care-label">自分の力で一歩ずつ</span>
-                </div>
-            </header>
-
-            <div class="main-content">
-                <main class="card-area">
-                    <div id="day-cards" class="card-grid active">
-                        <div class="card" onclick="selectEvent(this, 'image0', 'いつも通りの朝', '自分の力でベッドから起き上がった。')"><img src="image0.png" alt="朝"></div>
-                        <div class="card" onclick="selectEvent(this, 'image1', '動き出す街', '自分のペースで、今日すべきことに向かって進む。')"><img src="image1.png" alt="昼"></div>
-                        <div class="card" onclick="selectEvent(this, 'image2', '小さな違和感', '少し心がざわつく。でも、自分で対処できる。')"><img src="image2.png" alt="夕"></div>
-                        <div class="card" onclick="selectEvent(this, 'image3', '分岐点', '進むべき道を自分で決める。')"><img src="image3.png" alt="道"></div>
-                        <div class="card" onclick="selectEvent(this, 'image4', '夕暮れの影', '一日の終わりが見えてきた。少し疲れが出始める。')"><img src="image4.png" alt="影"></div>
-                        <div class="card" onclick="selectEvent(this, 'image5', '夜の帳', '夜がやってくる。心を落ち着ける時間。')"><img src="image5.png" alt="夜"></div>
-                    </div>
-
-                    <div id="night-cards" class="card-grid">
-                        <div class="card" onclick="selectEvent(this, 'image6', '状態：トイレにいきたい', '体のサイン。自分で気づいて動く。')"><img src="image6.png" alt="トイレ"></div>
-                        <div class="card" onclick="selectEvent(this, 'image7', '状態：おなかいたい', 'お腹が痛む。無理せず、自分を労わってあげる。')"><img src="image7.png" alt="腹痛"></div>
-                        <div class="card" onclick="selectEvent(this, 'image8', '状態：あたまいたい', '頭が重い。今は考えるのをやめて休むサイン。')"><img src="image8.png" alt="頭痛"></div>
-                        <div class="card" onclick="selectEvent(this, 'image9', '状態：おなかすいた', 'エネルギー切れ。自分の体に栄養を補給する。')"><img src="image9.png" alt="空腹"></div>
-                        <div class="card" onclick="selectEvent(this, 'image10', '状態：ねれない', '目が冴えてしまう。嫌な夢を見ないように、ここで心を整理する。')"><img src="image10.png" alt="不眠"></div>
-                        <div class="card" onclick="selectEvent(this, 'image11', '状態：おしごといやだ', '嫌なこと、つらい気持ち。ここに全部吐き出していい。')"><img src="image11.png" alt="拒否"></div>
-                    </div>
-                </main>
-
-                <aside class="write-area">
-                    <div class="area-title">【ココロの自由記述欄】</div>
-                    <p class="area-desc">いま思っていること、何でも自由に書いて、吐き出してください。</p>
-                    <textarea id="free-text" placeholder="ここに文字で気持ちを吐き出せます…"></textarea>
-                    <div class="canvas-wrap">
-                        <canvas id="paint-canvas" width="240" height="150"></canvas>
-                        <button class="clear-btn" onclick="canvasClear()">描き直す</button>
-                    </div>
-                </aside>
-            </div>
-
-            <footer class="message-area">
-                <div class="message-text">
-                    <h2 id="msg-title" class="message-title">カードを1枚選んでください</h2>
-                    <p id="msg-desc" class="message-desc">あなたの状態に近いものを選び、次へ進みます。</p>
-                </div>
-                <button id="next-btn" class="next-btn" onclick="nextChapter()" disabled>次へ進む →</button>
-            </footer>
+        <div class="player-status-bar">
+            <div class="status-item"><span class="status-icon">⭐</span> レベル: <span id="player-level">1</span></div>
+            <div class="status-item"><span class="status-icon">🪙</span> コイン: <span id="player-coins">0</span></div>
+            <div class="status-item"><span class="status-icon">🛡️</span> そうび: <span id="player-equipped">なし</span></div>
         </div>
 
-        <div id="result-screen" class="scene">
-            <h1 class="result-title">本日のクエスト総括ノート</h1>
-            <p class="charm-message">今夜は嫌な夢を見ず、穏やかに眠れますように。</p>
-            <div class="summary-area">
-                <div class="summary-block">
-                    <h3>【あなたが選んだ軌跡】</h3>
-                    <div id="summary-choices" class="summary-list"></div>
-                </div>
-                <div class="summary-block">
-                    <h3>【あなたが吐き出した言葉】</h3>
-                    <div id="summary-text" class="summary-text-wrap"></div>
-                </div>
-            </div>
-            <div class="retry-btn" onclick="gameReset()">新しい一日を始める</div>
-        </div>
+        <header class="game-header">
+            <h1 class="game-title">きもちボード</h1>
+            <p class="game-subtitle">どこに ぼうけんに いこうかな？</p>
+        </header>
+
+        <main class="nintendo-menu">
+            <a href="game.html" class="nintendo-btn btn-yellow">
+                <span class="btn-icon">🎮</span>
+                <span class="btn-content">
+                    <span class="btn-title">アクションゲーム</span>
+                    <span class="btn-subtext">ステージを えらんで ぼうけんだ！</span>
+                </span>
+            </a>
+
+            <a href="board.html" class="nintendo-btn btn-red">
+                <span class="btn-icon">💬</span>
+                <span class="btn-content">
+                    <span class="btn-title">きもちボード</span>
+                    <span class="btn-subtext">いまの きもちを カードでおくるよ！</span>
+                </span>
+            </a>
+
+            <a href="training.html" class="nintendo-btn btn-blue">
+                <span class="btn-icon">🧠</span>
+                <span class="btn-content">
+                    <span class="btn-title">クイズトレーニング</span>
+                    <span class="btn-subtext">おはなしを クリアして レベルアップ！</span>
+                </span>
+            </a>
+
+            <a href="shop.html" class="nintendo-btn btn-green">
+                <span class="btn-icon">🛍️</span>
+                <span class="btn-content">
+                    <span class="btn-title">コインショップ</span>
+                    <span class="btn-subtext">あつめた コインで おかいもの！</span>
+                </span>
+            </a>
+        </main>
 
     </div>
 
     <script>
-        var currentRoute = 'day';
-        var currentChapter = 1;
-        var choiceHistory = [];
-        var textHistory = [];
-
-        var chapterNames = {
-            1: "第1章：静かなる目覚め",
-            2: "第2章：日常の歯車",
-            3: "第3章：忍び寄る不穏",
-            4: "第4章：運命の分岐点",
-            5: "第5章：深層の葛藤",
-            6: "最終章：ココロの結末"
-        };
-
-        var temporaryChoice = null;
-
-        function gameStart() {
-            document.getElementById('title-screen').classList.remove('active');
-            document.getElementById('play-screen').classList.add('active');
-            canvasInit();
-        }
-
-        function selectEvent(element, imgName, title, desc) {
-            document.querySelectorAll('.card').forEach(function(c) { c.classList.remove('selected'); });
-            element.classList.add('selected');
-
-            document.getElementById('msg-title').innerText = title;
-            document.getElementById('msg-desc').innerText = desc;
-
-            temporaryChoice = {
-                title: title,
-                desc: desc,
-                chapter: chapterNames[currentChapter]
-            };
+        function loadStatus() {
+            var coins = localStorage.getItem('game_coins') || 0;
+            var level = localStorage.getItem('game_level') || 1;
+            var eq = localStorage.getItem('game_equipped') || "none";
             
-            document.getElementById('next-btn').disabled = false;
+            var eqName = "なし";
+            if(eq === "crown") eqName = "お祝いクラウン (コイン2倍)";
+            if(eq === "leaf") eqName = "木の葉 (ジャンプ強化)";
+            if(eq === "ramen") eqName = "ラーメン (スピード高速)";
+
+            document.getElementById('player-coins').innerText = coins;
+            document.getElementById('player-level').innerText = level;
+            document.getElementById('player-equipped').innerText = eqName;
         }
 
-        function nextChapter() {
-            if (!temporaryChoice) return;
-
-            choiceHistory.push(temporaryChoice);
+        function updateClock() {
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
             
-            var inputText = document.getElementById('free-text').value.trim();
-            if (inputText) {
-                textHistory.push("【" + chapterNames[currentChapter] + "】: " + inputText);
-            } else {
-                textHistory.push("【" + chapterNames[currentChapter] + "】: （言葉にできない想いを記録）");
-            }
-
-            document.getElementById('free-text').value = '';
-            canvasClear();
-
-            var choiceTitle = temporaryChoice.title || '';
-            if (currentRoute === 'day' && currentChapter >= 2) {
-                if (choiceTitle.indexOf('違和感') !== -1 || choiceTitle.indexOf('影') !== -1 || choiceTitle.indexOf('帳') !== -1) {
-                    currentRoute = 'night';
-                    document.getElementById('day-cards').classList.remove('active');
-                    document.getElementById('night-cards').classList.add('active');
-                }
-            }
-
-            currentChapter++;
-            temporaryChoice = null;
-            document.getElementById('next-btn').disabled = true;
-            document.querySelectorAll('.card').forEach(function(c) { c.classList.remove('selected'); });
-
-            if (currentChapter <= 6) {
-                document.getElementById('current-chapter').innerText = chapterNames[currentChapter];
-                document.getElementById('msg-title').innerText = 'カードを1枚選んでください';
-                document.getElementById('msg-desc').innerText = '次の時間帯のあなたの状態、または感情を選択してください。';
-            } else {
-                showResult();
-            }
-        }
-
-        function showResult() {
-            document.getElementById('play-screen').classList.remove('active');
-            document.getElementById('result-screen').classList.add('active');
-
-            var choiceWrap = document.getElementById('summary-choices');
-            choiceWrap.innerHTML = choiceHistory.map(function(h) { 
-                return '<div class="summary-item"><strong>' + h.chapter + '</strong><br><span>選択：' + h.title + '</span></div>';
-            }).join('');
-
-            var textWrap = document.getElementById('summary-text');
-            textWrap.innerHTML = textHistory.map(function(t) { 
-                return '<p class="summary-row">' + t + '</p>';
-            }).join('');
-        }
-
-        var canvas, context, isDrawing = false;
-
-        function canvasInit() {
-            canvas = document.getElementById('paint-canvas');
-            if (!canvas) return;
+            var period = "ごぜん";
+            if (hours >= 12) { period = "ごご"; }
+            if (hours > 12) { hours = hours - 12; } 
+            else if (hours === 0) { hours = 12; }
             
-            context = canvas.getContext('2d');
-            context.strokeStyle = '#111111';
-            context.lineWidth = 2;
-            context.lineCap = 'round';
-
-            canvas.addEventListener('mousedown', function(e) { drawStart(e); });
-            canvas.addEventListener('mousemove', function(e) { drawing(e); });
-            canvas.addEventListener('mouseup', function() { drawEnd(); });
-            canvas.addEventListener('mouseleave', function() { drawEnd(); });
-
-            canvas.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                if (e.touches && e.touches[0]) { drawStart(e.touches[0]); }
-            });
-            canvas.addEventListener('touchmove', function(e) {
-                e.preventDefault();
-                if (e.touches && e.touches[0]) { drawing(e.touches[0]); }
-            });
-            canvas.addEventListener('touchend', function() { drawEnd(); });
-        }
-
-        function drawStart(e) {
-            isDrawing = true;
-            context.beginPath();
-            var pos = getCanvasPos(e);
-            context.moveTo(pos.x, pos.y);
-        }
-
-        function drawing(e) {
-            if (!isDrawing) return;
-            var pos = getCanvasPos(e);
-            context.lineTo(pos.x, pos.y);
-            context.stroke();
-        }
-
-        function drawEnd() { 
-            isDrawing = false; 
-        }
-
-        function getCanvasPos(e) {
-            var rect = canvas.getBoundingClientRect();
-            return {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            };
-        }
-
-        function canvasClear() {
-            if (context && canvas) {
-                context.clearRect(0, 0, canvas.width, canvas.height);
-            }
-        }
-
-        function gameReset() {
-            currentRoute = 'day';
-            currentChapter = 1;
-            choiceHistory = [];
-            textHistory = [];
-            temporaryChoice = null;
-
-            document.getElementById('current-chapter').innerText = chapterNames[1];
-            document.getElementById('day-cards').classList.add('active');
-            document.getElementById('night-cards').classList.remove('active');
-            document.getElementById('next-btn').disabled = true;
-            document.getElementById('free-text').value = '';
+            hours = ("0" + hours).slice(-2);
+            minutes = ("0" + minutes).slice(-2);
+            seconds = ("0" + seconds).slice(-2);
             
-            document.getElementById('msg-title').innerText = 'カードを1枚選んでください';
-            document.getElementById('msg-desc').innerText = 'あなたの状態に近いものを選び、次へ進みます。';
-
-            document.getElementById('result-screen').classList.remove('active');
-            document.getElementById('title-screen').classList.add('active');
+            document.getElementById('digital-clock').innerText = hours + ":" + minutes + ":" + seconds;
+            document.getElementById('clock-period').innerText = period;
         }
+        
+        setInterval(updateClock, 1000);
+        updateClock(); 
+        loadStatus();
     </script>
-
 </body>
 </html>
