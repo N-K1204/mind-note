@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>きもちボード - アクションぼうけん</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #game-canvas { background: #74b9ff; border: 5px solid #000; border-radius: 20px; display: block; margin: 0 auto; box-shadow: 0 10px 0 #000; }
+        .game-controls { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+        .ctrl-btn { width: 85px; height: 80px; font-size: 2rem; font-weight: bold; background: #ff4757; border: 4px solid #000; border-radius: 24px; box-shadow: 0 6px 0 #000; color: white; cursor: pointer; }
+        .ctrl-btn:active { transform: translateY(6px); box-shadow: none; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="nav-area">
+            <a href="index.html" class="nintendo-back-btn">🏠 ホーム画面にもどる</a>
+        </div>
+
+        <div id="stage-select-screen" class="nintendo-quiz-box">
+            <h2 class="nintendo-summoned-text" style="color:#000; text-shadow:none; text-align:center; margin-bottom:20px;">🗺️ ステージを えらぼう！</h2>
+            <div class="stage-grid">
+                <button class="stage-select-card" onclick="startStage(1)">
+                    <img src="./image0.png" alt="1">
+                    <span class="stage-select-text-block">
+                        <span class="stage-select-main-title">1話：はじまりの平原</span>
+                    </span>
+                </button>
+                <button id="stage2-btn" class="stage-select-card" onclick="startStage(2)" style="background:#ced6e0; opacity:0.5;">
+                    <img src="./image4.png" alt="2">
+                    <span class="stage-select-text-block">
+                        <span class="stage-select-main-title">2話：いらいら火山 (要Lv2)</span>
+                    </span>
+                </button>
+                <button id="stage3-btn" class="stage-select-card" onclick="startStage(3)" style="background:#ced6e0; opacity:0.5;">
+                    <img src="./image11.png" alt="3">
+                    <span class="stage-select-text-block">
+                        <span class="stage-select-main-title">3話：おしごと城 (要Lv3)</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <div id="game-play-screen" class="hidden">
+            <div class="player-status-bar" style="margin-bottom:10px;">
+                <div>コイン: <span id="game-coin-count">0</span> 🪙</div>
+                <div id="game-buff-status" style="color:#2ed573;">そうび効果: なし</div>
+                <div id="game-message" style="color:#ff4757; font-weight:bold;"></div>
+            </div>
+            
+            <canvas id="game-canvas" width="550" height="320"></canvas>
+            
+            <div class="game-controls">
+                <button class="ctrl-btn" onmousedown="moveLeft()" onmouseup="stopMove()" ontouchstart="moveLeft()" ontouchend="stopMove()">◀</button>
+                <button class="ctrl-btn" onmousedown="moveRight()" onmouseup="stopMove()" ontouchstart="moveRight()" ontouchend="stopMove()">▶</button>
+                <button class="ctrl-btn" onclick="jump()" style="background:#ffa502;">ジャンプ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var canvas = document.getElementById("game-canvas");
+        var ctx = canvas.getContext("2d");
+        var gameInterval;
+        var currentStage = 1;
+        
+        var cameraX = 0;
+        var worldWidth = 1500; 
+
+        var player = { x: 50, y: 200, width: 32, height: 44, vx: 0, vy: 0, isJumping: false };
+        var coins = [];
+        var enemies = [];
+        var platforms = []; 
+        var goal = { x: 1420, y: 190, width: 20, height: 70 }; 
+        var collectedInStage = 0;
+
+        var speedModifier = 1;
+        var jumpModifier = 0;
+        var coinMultiplier = 1;
+
+        function applyEquipment() {
+            var eq = localStorage.getItem('game_equipped') || "none";
+            var buffText = "そうび効果: なし";
+            speedModifier = 1;
+            jumpModifier = 0;
+            coinMultiplier = 1;
+
+            if (eq === "crown") {
+                coinMultiplier = 2;
+                buffText = "👑 クラウン：コイン獲得量2倍！";
+            } else if (eq === "leaf") {
+                jumpModifier = 3;
+                buffText = "🍃 木の葉：ジャンプ力がアップ！";
+            } else if (eq === "ramen") {
+                speedModifier = 1.6;
+                buffText = "🍜 ラーメン：移動スピードがアップ！";
+            }
+            document.getElementById('game-buff-status').innerText = buffText;
+        }
+
+        function checkLocks() {
+            var lvl = parseInt(localStorage.getItem('game_level') || 1);
+            if(lvl >= 2) {
+                document.getElementById('stage2-btn').style.background = "#fff";
+                document.getElementById('stage2-btn').style.opacity = "1";
+            }
+            if(lvl >= 3) {
+                document.getElementById('stage3-btn').style.background = "#fff";
+                document.getElementById('stage3-btn').style.opacity = "1";
+            }
+        }
+
+        function startStage(stageNum) {
+            var lvl = parseInt(localStorage.getItem('game_level') || 1);
+            if(stageNum === 2 && lvl < 2) { alert("レベルを2にしてね！"); return; }
+            if(stageNum === 3 && lvl < 3) { alert("レベルを3にしてね！"); return; }
+
+            currentStage = stageNum;
+            document.getElementById('stage-select-screen').classList.add('hidden');
+            document.getElementById('game-play-screen').classList.remove('hidden');
+            
+            player.x = 50; player.y = 200; player.vx = 0; player.vy = 0;
+            cameraX = 0;
+            collectedInStage = 0;
+            document.getElementById('game-coin-count').innerText = collectedInStage;
+            document.getElementById('game-message').innerText = "";
+
+            applyEquipment();
+
+            if (currentStage === 1) {
+                canvas.style.backgroundColor = "#74b9ff"; 
+                coins = [{x:200,y:180},{x:400,y:140},{x:600,y:180},{x:800,y:120},{x:1000,y:180},{x:1200,y:140}];
+                enemies = [
+                    {x: 300, y: 226, vx: -1.2, width: 32, height: 32, color: "#5758bb"},
+                    {x: 700, y: 226, vx: -1.0, width: 32, height: 32, color: "#5758bb"},
+                    {x: 1100, y: 226, vx: -1.5, width: 32, height: 32, color: "#5758bb"}
+                ];
+                platforms = [];
+            } else if (currentStage === 2) {
+                canvas.style.backgroundColor = "#ff7675"; 
+                coins = [{x:250,y:120},{x:500,y:100},{x:750,y:120},{x:900,y:150},{x:1150,y:100}];
+                enemies = [
+                    {x: 350, y: 226, vx: -2.8, width: 32, height: 32, color: "#ea2027"}, 
+                    {x: 650, y: 226, vx: -3.0, width: 32, height: 32, color: "#ea2027"},
+                    {x: 950, y: 226, vx: -2.5, width: 32, height: 32, color: "#ea2027"},
+                    {x: 1250, y: 226, vx: -3.5, width: 32, height: 32, color: "#ea2027"}
+                ];
+                platforms = [];
+            } else if (currentStage === 3) {
+                canvas.style.backgroundColor = "#2c3e50"; 
+                coins = [{x:150,y:140},{x:450,y:80},{x:700,y:120},{x:950,y:70},{x:1200,y:120}];
+                enemies = [
+                    {x: 250, y: 226, vx: -1.5, width: 32, height: 32, color: "#1e272e"},
+                    {x: 550, y: 126, vx: -2.0, width: 32, height: 32, color: "#1e272e"},
+                    {x: 850, y: 226, vx: -1.8, width: 32, height: 32, color: "#1e272e"}
+                ];
+                platforms = [
+                    {x: 400, y: 160, width: 100, height: 20, direction: 1, range: 80, startX: 400},
+                    {x: 900, y: 140, width: 120, height: 20, direction: 1, range: 100, startX: 900}
+                ];
+            }
+            
+            if(gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(updateGame, 1000/60);
+        }
+
+        function moveLeft() { player.vx = -4.5 * speedModifier; }
+        function moveRight() { player.vx = 4.5 * speedModifier; }
+        function stopMove() { player.vx = 0; }
+        function jump() { 
+            if (!player.isJumping) { 
+                player.vy = -(10.5 + jumpModifier); 
+                player.isJumping = true; 
+            } 
+        }
+
+        function updateGame() {
+            player.vy += 0.52; 
+            player.x += player.vx;
+            player.y += player.vy;
+
+            if (player.y >= 216) { 
+                player.y = 216; 
+                player.vy = 0; 
+                player.isJumping = false; 
+            }
+
+            platforms.forEach(function(plat) {
+                plat.x += plat.direction * 1.5;
+                if (Math.abs(plat.x - plat.startX) > plat.range) {
+                    plat.direction *= -1; 
+                }
+                if (player.x + player.width > plat.x && player.x < plat.x + plat.width) {
+                    if (player.vy > 0 && player.y + player.height <= plat.y + 12 && player.y + player.height + player.vy >= plat.y) {
+                        player.y = plat.y - player.height;
+                        player.vy = 0;
+                        player.isJumping = false;
+                    }
+                }
+            });
+
+            if (player.x < 0) player.x = 0;
+            if (player.x > worldWidth - player.width) player.x = worldWidth - player.width;
+
+            if (player.x > cameraX + 250) {
+                cameraX = player.x - 250;
+            } else if (player.x < cameraX + 100) {
+                cameraX = player.x - 100;
+            }
+            if (cameraX < 0) cameraX = 0;
+            if (cameraX > worldWidth - 550) cameraX = worldWidth - 550;
+
+            enemies.forEach(function(enemy, index) {
+                enemy.x += enemy.vx;
+                if(enemy.x < 0 || enemy.x > worldWidth - 50) enemy.vx *= -1;
+
+                if(player.x < enemy.x + enemy.width && player.x + player.width > enemy.x &&
+                   player.y < enemy.y + enemy.height && player.y + player.height > enemy.y) {
+                    
+                    if(player.vy > 0 && player.y + player.height - player.vy <= enemy.y + 12) {
+                        enemies.splice(index, 1);
+                        player.vy = -8.5; 
+                        var currentCoins = parseInt(localStorage.getItem('game_coins') || 0);
+                        var reward = 5 * coinMultiplier;
+                        localStorage.setItem('game_coins', currentCoins + reward);
+                        collectedInStage += reward;
+                        document.getElementById('game-coin-count').innerText = collectedInStage;
+                    } else {
+                        document.getElementById('game-message').innerText = "💥 あたってしまった！やりなおし！";
+                        player.x = 50; player.y = 200;
+                    }
+                }
+            });
+
+            coins.forEach(function(coin, index) {
+                if(player.x < coin.x + 20 && player.x + player.width > coin.x &&
+                   player.y < coin.y + 20 && player.y + player.height > coin.y) {
+                    coins.splice(index, 1);
+                    var currentCoins = parseInt(localStorage.getItem('game_coins') || 0);
+                    var reward = 1 * coinMultiplier;
+                    localStorage.setItem('game_coins', currentCoins + reward);
+                    collectedInStage += reward;
+                    document.getElementById('game-coin-count').innerText = collectedInStage;
+                }
+            });
+
+            if(player.x + player.width >= goal.x) {
+                clearInterval(gameInterval);
+                var currentLvl = parseInt(localStorage.getItem('game_level') || 1);
+                if(currentStage === currentLvl) {
+                    localStorage.setItem('game_level', currentLvl + 1);
+                }
+                alert("🎉 ステージクリア！レベルアップしたよ！");
+                window.location.href = "index.html";
+            }
+
+            drawGame();
+        }
+
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(-cameraX, 0); 
+
+            ctx.fillStyle = "#27ae60";
+            ctx.fillRect(0, 260, worldWidth, 60);
+            ctx.fillStyle = "#1e272e";
+            ctx.fillRect(0, 260, worldWidth, 4);
+
+            ctx.fillStyle = "#d35400";
+            platforms.forEach(function(plat) {
+                ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
+                ctx.strokeRect(plat.x, plat.y, plat.width, plat.height);
+            });
+
+            ctx.fillStyle = "#7f8c8d";
+            ctx.fillRect(goal.x, goal.y, 6, goal.height);
+            ctx.fillStyle = "#e74c3c";
+            ctx.fillRect(goal.x + 6, goal.y, 30, 20);
+
+            ctx.fillStyle = "#ff4757";
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            ctx.strokeStyle = "#000";
+            ctx.lineWidth = 3;
+            ctx.strokeRect(player.x, player.y, player.width, player.height);
+            ctx.fillStyle = "#000";
+            ctx.fillRect(player.x + 20, player.y + 10, 6, 8); 
+
+            ctx.fillStyle = "#ffd32a";
+            coins.forEach(function(coin) {
+                ctx.beginPath(); 
+                ctx.arc(coin.x + 10, coin.y + 10, 10, 0, Math.PI*2); 
+                ctx.fill();
+                ctx.stroke();
+            });
+
+            enemies.forEach(function(enemy) {
+                ctx.fillStyle = enemy.color;
+                ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+                ctx.strokeRect(enemy.x, enemy.y, enemy.width, enemy.height);
+            });
+
+            ctx.restore();
+        }
+
+        checkLocks();
+    </script>
+</body>
+</html>
