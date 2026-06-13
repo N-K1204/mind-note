@@ -14,6 +14,7 @@
             <a href="index.html" class="nintendo-back-btn">🏠 ホーム画面にもどる</a>
         </div>
 
+        <!-- ストーリー選択メニュー（全6話） -->
         <div id="training-menu-screen" class="nintendo-quiz-box">
             <h2 class="nintendo-summoned-text" style="color:#000; text-shadow:none; text-align:center; margin-bottom:20px;">🗺️ くんれんステージを えらぼう！</h2>
             <div class="stage-grid">
@@ -27,20 +28,42 @@
                 <button class="stage-select-card" onclick="openQuiz(1)">
                     <img src="./image7.png" alt="2">
                     <span class="stage-select-text-block">
-                        <span class="stage-select-main-title">2話：からだの ピンチとほうこく 🚽</span>
+                        <span class="stage-select-main-title">2話：からだのピンチとほうこく 🚽</span>
                         <span id="clear-badge-1" class="clear-status-text">🌟 みくりあ</span>
                     </span>
                 </button>
                 <button class="stage-select-card" onclick="openQuiz(2)">
                     <img src="./image11.png" alt="3">
                     <span class="stage-select-text-block">
-                        <span class="stage-select-main-title">3話：おしごとがいやになったとき 💥</span>
+                        <span class="stage-select-main-title">3話：おしごとがいやなとき 💥</span>
                         <span id="clear-badge-2" class="clear-status-text">🌟 みくりあ</span>
+                    </span>
+                </button>
+                <button class="stage-select-card" onclick="openQuiz(3)">
+                    <img src="./image8.png" alt="4">
+                    <span class="stage-select-text-block">
+                        <span class="stage-select-main-title">4話：あたまや体がいたいとき 🤒</span>
+                        <span id="clear-badge-3" class="clear-status-text">🌟 みくりあ</span>
+                    </span>
+                </button>
+                <button class="stage-select-card" onclick="openQuiz(4)">
+                    <img src="./image1.png" alt="5">
+                    <span class="stage-select-text-block">
+                        <span class="stage-select-main-title">5話：きゅうな予定のへんか 📅</span>
+                        <span id="clear-badge-4" class="clear-status-text">🌟 みくりあ</span>
+                    </span>
+                </button>
+                <button class="stage-select-card" onclick="openQuiz(5)">
+                    <img src="./image5.png" alt="6">
+                    <span class="stage-select-text-block">
+                        <span class="stage-select-main-title">6話：心がもやもやパニック 🌀</span>
+                        <span id="clear-badge-5" class="clear-status-text">🌟 みくりあ</span>
                     </span>
                 </button>
             </div>
         </div>
 
+        <!-- クイズプレイ画面 -->
         <div id="training-play-screen" class="hidden">
             <div class="nintendo-quiz-box">
                 <button class="nintendo-action-btn reset-action" onclick="backToMenu()" style="padding: 10px 20px; font-size: 1.1rem; width: auto; margin-bottom: 15px;">⬅️ マップへもどる</button>
@@ -51,7 +74,7 @@
 
                 <div class="nintendo-control-area">
                     <button id="quiz-reset-btn" class="nintendo-action-btn reset-action hidden" onclick="resetQuiz()">もういちど えらびなおす 🔄</button>
-                    <button id="quiz-home-btn" class="nintendo-action-btn next-action hidden" onclick="backToMenu()">おはなしクリア！マップへ 🗺️</button>
+                    <button id="quiz-home-btn" class="nintendo-action-btn next-action hidden" onclick="backToMenu()">ステージクリア！マップへ 🗺️</button>
                 </div>
             </div>
         </div>
@@ -107,6 +130,57 @@
                         text: "✋ おくるボタンで「おしごといやだ」を送信し、やすみたいとつたえる", 
                         isCorrect: true, 
                         reaction: "✨ 先生が「教えてくれてありがとう、少し休憩しようね」と静かな場所に案内してくれました。言葉の代わりにシステムでSOSを出せて大せいかい！コインを10枚ゲット！",
+                        color: "#55efc4"
+                    }
+                ]
+            },
+            {
+                question: "作業をしているときに、急に頭がズキズキ痛くなってきました。熱もあるかもしれません。しんどくて倒れそうなとき、どうやって周りの先生に伝える？",
+                choices: [
+                    { 
+                        text: "😣 我慢して、痛いのを隠してそのまま作業を続ける", 
+                        isCorrect: false, 
+                        reaction: "😭 我慢しすぎると、途中で倒れて大きなケガをしてしまう危険があります！体調が悪いときは早く教えるのが社会のルールです。",
+                        color: "#ff7675"
+                    },
+                    { 
+                        text: "✋ 「あたまがいたい」カードを召喚して大人に通知する", 
+                        isCorrect: true, 
+                        reaction: "✨ すばらしい！大人がすぐに気づいて熱を測り、保健室やお布団へ案内してくれました。自分の体を守るための最高の報告です！10コインゲット！",
+                        color: "#55efc4"
+                    }
+                ]
+            },
+            {
+                question: "今日は「パソコンの作業」をする予定だったのに、急に先生から「今日は部屋の掃除に変更です」と言われました。やりたかった事と違ってパニックになりそうです。どうする？",
+                choices: [
+                    { 
+                        text: "😡 「絶対に嫌だ！」と叫んで、部屋を飛び出す", 
+                        isCorrect: false, 
+                        reaction: "😰 急に予定が変わるとビックリするよね。でも、何も言わずに飛び出すと迷子になったり車にぶつかる危険があって周りの人も心配します。",
+                        color: "#ff7675"
+                    },
+                    { 
+                        text: "🧘 「もやもや…」カードを大人に見せて、一度深呼吸する", 
+                        isCorrect: true, 
+                        reaction: "✨ 素晴らしい対応です！「急に変わってビックリしたね、10分だけ休憩してから掃除しよう」と大人が予定を調整してくれました。予定変更に対応できて大せいかい！10コインゲット！",
+                        color: "#55efc4"
+                    }
+                ]
+            },
+            {
+                question: "周りの音がうるさかったり、嫌なことが重なって、頭の中が破裂しそう（パニック）になってしまいました。暴れてしまいそうな時、どこで落ち着くのがいい？",
+                choices: [
+                    { 
+                        text: "🔨 近くにあるテレビや窓ガラスを叩き割る", 
+                        isCorrect: false, 
+                        reaction: "❌ ガラスが割れると大きな音がして、あなたも周りの人も大怪我をしてしまいます。イライラしても、物を壊すのは絶対にやってはいけません。",
+                        color: "#ff7675"
+                    },
+                    { 
+                        text: "🏃 「おちつく～」カードを選び、静かなクールダウンの部屋に移動する", 
+                        isCorrect: true, 
+                        reaction: "✨ パーフェクト！静かな一人になれる場所（クールダウンエリア）でじっとしていると、脳のイライラがスーッと消えていきました。困ったときは静かに休むのが一番です！10コインゲット！",
                         color: "#55efc4"
                     }
                 ]
