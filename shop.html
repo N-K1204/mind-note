@@ -55,7 +55,6 @@
             document.getElementById('shop-coins').innerText = coins;
 
             var equipped = localStorage.getItem('game_equipped') || "none";
-            
             var nameMap = { "none": "なし", "crown": "お祝いクラウン", "leaf": "おちつく木の葉", "ramen": "パワーアップラーメン" };
             document.getElementById('shop-equipped-name').innerText = nameMap[equipped];
 
@@ -96,7 +95,7 @@
                     localStorage.setItem('game_coins', currentCoins - price);
                     localStorage.setItem('shop_owned_' + itemId, 'true');
                     localStorage.setItem('game_equipped', itemId); 
-                    alert("🎉 かったよ！そのままそうびしたよ！");
+                    alert("🎉 買ったよ！そのままそうびしたよ！");
                 } else {
                     alert("😢 コインが たらないよ！");
                 }
