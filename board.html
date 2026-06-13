@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>きもちボード - ボード送信</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-container">
+        
+        <div class="nav-area">
+            <a href="index.html" class="nintendo-back-btn">🏠 ホーム画面にもどる</a>
+        </div>
+
+        <div class="stage-room">
+            <div id="summon-area" class="nintendo-summon-box">
+                <p class="placeholder-text">ここに カードが しょうかん されるよ！</p>
+            </div>
+
+            <div class="action-area">
+                <button id="send-btn" class="nintendo-send-btn" onclick="sendToDiscord()" disabled>おくる！ 🚀</button>
+            </div>
+
+            <main class="card-layout">
+                <div class="nintendo-card-grid" id="card-grid"></div>
+            </main>
+        </div>
+
+    </div>
+
+    <script>
+        var allCards = [
+            { text: "うれしい！", img: "./image0.png", color: "#ff7675" },
+            { text: "おちつく～", img: "./image1.png", color: "#55efc4" },
+            { text: "やったー！", img: "./image2.png", color: "#ffeaa7" },
+            { text: "かなしいな", img: "./image3.png", color: "#74b9ff" },
+            { text: "いらいら！", img: "./image4.png", color: "#ff7675" },
+            { text: "もやもや…", img: "./image5.png", color: "#a29bfe" },
+            { text: "トイレにいきたい", img: "./image6.png", color: "#81ecec" },
+            { text: "おなかがいたい", img: "./image7.png", color: "#fab1a0" },
+            { text: "あたまがいたい", img: "./image8.png", color: "#a29bfe" },
+            { text: "おなかすいた！", img: "./image9.png", color: "#ffeaa7" },
+            { text: "ねむれないよ", img: "./image10.png", color: "#b2bec3" },
+            { text: "おしごといやだ", img: "./image11.png", color: "#ff7675" }
+        ];
+
+        var selectedCardText = "";
+
+        function initBoard() {
+            var grid = document.getElementById('card-grid');
+            grid.innerHTML = "";
+            
+            allCards.forEach(function(opt) {
+                var div = document.createElement('div');
+                div.className = 'nintendo-card';
+                div.style.backgroundColor = opt.color;
+                
+                var img = document.createElement('img');
+                img.src = opt.img;
+                img.alt = opt.text;
+                
+                var span = document.createElement('span');
+                span.className = 'card-title-text';
+                span.innerText = opt.text;
+                
+                div.appendChild(img);
+                div.appendChild(span);
+                
+                div.onclick = function() {
+                    document.querySelectorAll('.nintendo-card').forEach(function(c) { c.classList.remove('selected'); });
+                    div.classList.add('selected');
+                    summonCard(opt);
+                };
+                grid.appendChild(div);
+            });
+        }
+
+        function summonCard(cardData) {
+            selectedCardText = cardData.text;
+            
+            var zone = document.getElementById('summon-area');
+            zone.innerHTML = ""; 
+            zone.style.backgroundColor = cardData.color;
+            
+            var bigImg = document.createElement('img');
+            bigImg.src = cardData.img;
+            bigImg.className = "nintendo-summoned-img anime-strike";
+            
+            var bigText = document.createElement('div');
+            bigText.className = "nintendo-summoned-text";
+            bigText.innerText = cardData.text;
+            
+            zone.appendChild(bigImg);
+            zone.appendChild(bigText);
+            
+            var sendBtn = document.getElementById('send-btn');
+            sendBtn.disabled = false;
+            sendBtn.classList.add('active-ready');
+            sendBtn.innerText = "おくる！ 🚀";
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function sendToDiscord() {
+            if (!selectedCardText) return;
+
+            var sendBtn = document.getElementById('send-btn');
+            sendBtn.innerText = "おくり中... ⏳";
+            sendBtn.disabled = true;
+            sendBtn.classList.remove('active-ready');
+
+            var gasUrl = "https://script.google.com/macros/s/AKfycbwRVj28mjtEFwrbQzcHpKsjFUzuBigo2pYkuaUn0YiyeJTkG4GoFxczTutb9rmdpMLr/exec"; 
+
+            fetch(gasUrl, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: selectedCardText })
+            })
+            .then(function() {
+                sendBtn.innerText = "おくったよ！ ✨";
+                setTimeout(function() { 
+                    sendBtn.innerText = "おくる！ 🚀"; 
+                    sendBtn.disabled = false;
+                    sendBtn.classList.add('active-ready');
+                }, 2000);
+            })
+            .catch(function(err) {
+                alert("つうしん エラー！");
+                sendBtn.innerText = "おくる！ 🚀";
+                sendBtn.disabled = false;
+                sendBtn.classList.add('active-ready');
+            });
+        }
+
+        initBoard();
+    </script>
+</body>
+</html>
