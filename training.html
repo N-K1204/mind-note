@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>きもちボード - クイズトレーニング</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-container">
+        
+        <div class="nav-area">
+            <a href="index.html" class="nintendo-back-btn">🏠 ホーム画面にもどる</a>
+        </div>
+
+        <div id="training-menu-screen" class="nintendo-quiz-box">
+            <h2 class="nintendo-summoned-text" style="color:#000; text-shadow:none; text-align:center; margin-bottom:20px;">🗺️ くんれんステージを えらぼう！</h2>
+            <div class="stage-grid">
+                <button class="stage-select-card" onclick="openQuiz(0)">
+                    <img src="./image2.png" alt="1">
+                    <span class="stage-select-text-block">
+                        <span class="stage-select-main-title">1話：おもちゃのかしあい 🧸</span>
+                        <span id="clear-badge-0" class="clear-status-text">🌟 みくりあ</span>
+                    </span>
+                </button>
+                <button class="stage-select-card" onclick="openQuiz(1)">
+                    <img src="./image7.png" alt="2">
+                    <span class="stage-select-text-block">
+                        <span class="stage-select-main-title">2話：からだの ピンチとほうこく 🚽</span>
+                        <span id="clear-badge-1" class="clear-status-text">🌟 みくりあ</span>
+                    </span>
+                </button>
+                <button class="stage-select-card" onclick="openQuiz(2)">
+                    <img src="./image11.png" alt="3">
+                    <span class="stage-select-text-block">
+                        <span class="stage-select-main-title">3話：おしごとがいやになったとき 💥</span>
+                        <span id="clear-badge-2" class="clear-status-text">🌟 みくりあ</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <div id="training-play-screen" class="hidden">
+            <div class="nintendo-quiz-box">
+                <button class="nintendo-action-btn reset-action" onclick="backToMenu()" style="padding: 10px 20px; font-size: 1.1rem; width: auto; margin-bottom: 15px;">⬅️ マップへもどる</button>
+
+                <div id="quiz-question-box" class="nintendo-question"></div>
+                <div id="quiz-reaction-box" class="nintendo-reaction-theater hidden"></div>
+                <div id="quiz-choices-box" class="nintendo-choices-stack"></div>
+
+                <div class="nintendo-control-area">
+                    <button id="quiz-reset-btn" class="nintendo-action-btn reset-action hidden" onclick="resetQuiz()">もういちど えらびなおす 🔄</button>
+                    <button id="quiz-home-btn" class="nintendo-action-btn next-action hidden" onclick="backToMenu()">おはなしクリア！マップへ 🗺️</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var quizData = [
+            {
+                question: "おともだちが つくえのうえで 楽しそうに くるまの おもちゃであそんでいます。あなたも そのおもちゃが どうしても つかいたくなりました。こんなとき、どうすれば 社会で なかよくすごせるかな？",
+                choices: [
+                    { 
+                        text: "😠 「よこせ！」といって むりやり 手から うばいとる", 
+                        isCorrect: false, 
+                        reaction: "😢 おともだちは ビックリして 泣き出してしまいました。まわりの先生やおとなも おこっています。これでは なかよくあそべないね...",
+                        color: "#ff7675"
+                    },
+                    { 
+                        text: "😊 おともだちの かおをみて「かーしーて」と やさしくきいてみる", 
+                        isCorrect: true, 
+                        reaction: "✨「いいよ！」とおともだちが えがおで くるまをゆずってくれました！ふたりで なかよくあそべて大せいかい！コインを10枚ゲット！",
+                        color: "#55efc4"
+                    }
+                ]
+            },
+            {
+                question: "がっこうや 施設でおしごとをしているときに、きゅうに おなかが 痛くなってきて、トイレにいきたくなりました。はずかしいし、みんなおしごと中だから、どうしよう？",
+                choices: [
+                    { 
+                        text: "🤫 がまんできなくなるまで だまって じっとすわっている", 
+                        isCorrect: false, 
+                        reaction: "😭 がまんしすぎて、もっとおなかが 痛くなってしまいました！だまっていると、まわりの大人は あなたが困っていることに 気づけません。",
+                        color: "#ff7675"
+                    },
+                    { 
+                        text: "👉 このアプリの『きもちボード』で トイレカードをおとなに おくる！", 
+                        isCorrect: true, 
+                        reaction: "✨ すばらしい！おとなのスマホにすぐSOSがとどき、やさしくトイレに つれていってくれました！がまんせず 言えて大せいかい！コインを10枚ゲット！",
+                        color: "#55efc4"
+                    }
+                ]
+            },
+            {
+                question: "たくさんおしごとをして、つかれてしまいました。頭のなかが いらいらして、もうなにも やりたくありません。投げ出したいとき、どうやって まわりのひとに 伝える？",
+                choices: [
+                    { 
+                        text: "💥 つくえを ドカン！とたたいて、モノをなげつけて おこる", 
+                        isCorrect: false, 
+                        reaction: "😰 まわりの人がこわがって 離れていってしまいました。モノがこわれると あなたの手もケガをしてしまうので、これでは気持ちが正しく伝わりません。",
+                        color: "#ff7675"
+                    },
+                    { 
+                        text: "✋ おくるボタンで「おしごといやだ」を送信し、やすみたいとつたえる", 
+                        isCorrect: true, 
+                        reaction: "✨ 先生が「教えてくれてありがとう、少し休憩しようね」と静かな場所に案内してくれました。言葉の代わりにシステムでSOSを出せて大せいかい！コインを10枚ゲット！",
+                        color: "#55efc4"
+                    }
+                ]
+            }
+        ];
+
+        var currentQuizIdx = 0;
+
+        function updateMenuBadges() {
+            for (var i = 0; i < quizData.length; i++) {
+                var isCleared = localStorage.getItem('quiz_clear_' + i);
+                var badge = document.getElementById('clear-badge-' + i);
+                if (isCleared === 'true') {
+                    badge.innerText = "👑 クリア！ (+10コイン)";
+                    badge.style.color = "#ffa502";
+                } else {
+                    badge.innerText = "🌟 みくりあ";
+                    badge.style.color = "#718093";
+                }
+            }
+        }
+
+        function openQuiz(idx) {
+            currentQuizIdx = idx;
+            document.getElementById('training-menu-screen').classList.add('hidden');
+            document.getElementById('training-play-screen').classList.remove('hidden');
+            showQuiz();
+        }
+
+        function showQuiz() {
+            var quiz = quizData[currentQuizIdx];
+            document.getElementById('quiz-question-box').innerText = quiz.question;
+            
+            var reactionBox = document.getElementById('quiz-reaction-box');
+            reactionBox.classList.add('hidden');
+            reactionBox.innerHTML = "";
+
+            document.getElementById('quiz-reset-btn').classList.add('hidden');
+            document.getElementById('quiz-home-btn').classList.add('hidden');
+
+            var choicesBox = document.getElementById('quiz-choices-box');
+            choicesBox.innerHTML = "";
+            
+            quiz.choices.forEach(function(choice) {
+                var btn = document.createElement('button');
+                btn.className = 'nintendo-choice-btn';
+                btn.innerText = choice.text;
+                
+                btn.onclick = function() {
+                    document.querySelectorAll('.nintendo-choice-btn').forEach(function(b) { b.disabled = true; });
+                    displayQuizResult(choice);
+                };
+                choicesBox.appendChild(btn);
+            });
+        }
+
+        function displayQuizResult(choice) {
+            var reactionBox = document.getElementById('quiz-reaction-box');
+            reactionBox.classList.remove('hidden');
+            reactionBox.style.backgroundColor = choice.color;
+            reactionBox.innerText = choice.reaction;
+            reactionBox.className = "nintendo-reaction-theater anime-strike";
+
+            if (choice.isCorrect) {
+                if (localStorage.getItem('quiz_clear_' + currentQuizIdx) !== 'true') {
+                    localStorage.setItem('quiz_clear_' + currentQuizIdx, 'true');
+                    var currentCoins = parseInt(localStorage.getItem('game_coins') || 0);
+                    localStorage.setItem('game_coins', currentCoins + 10);
+                    
+                    var currentLvl = parseInt(localStorage.getItem('game_level') || 1);
+                    localStorage.setItem('game_level', currentLvl + 1);
+                }
+                document.getElementById('quiz-home-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('quiz-reset-btn').classList.remove('hidden');
+            }
+        }
+
+        function resetQuiz() {
+            showQuiz();
+        }
+
+        function backToMenu() {
+            document.getElementById('training-play-screen').classList.add('hidden');
+            document.getElementById('training-menu-screen').classList.remove('hidden');
+            updateMenuBadges();
+        }
+
+        updateMenuBadges();
+    </script>
+</body>
+</html>
