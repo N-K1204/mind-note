@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>きもちボード - ことばのレッスン</title>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --wood-dark: #79553D;
+            --wood-light: #DEB887;
+            --paper: #FFFdf5;
+            --primary: #ff8bb0;
+            --blue: #7da6ff;
+            --curtain: #c0392b;
+        }
+
+        /* --- 紙芝居の舞台デザイン --- */
+        .kamishibai-stage {
+            background: var(--wood-light);
+            border: 12px solid var(--wood-dark);
+            border-radius: 20px;
+            width: 100%; aspect-ratio: 4/3;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 0 15px rgba(0,0,0,0.3);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column;
+            margin-bottom: 20px; margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        /* 🎭 幕（カーテン） */
+        .curtain {
+            position: absolute; top: 0; width: 50%; height: 100%;
+            background: var(--curtain); z-index: 50;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 4px solid rgba(0,0,0,0.2);
+        }
+        .curtain.left { left: 0; transform-origin: left; }
+        .curtain.right { right: 0; transform-origin: right; border-right: none; border-left: 4px solid rgba(0,0,0,0.2); }
+        .curtain-open .curtain.left { transform: translateX(-100%); }
+        .curtain-open .curtain.right { transform: translateX(100%); }
+
+        /* 💖 なかよしゲージ */
+        .nakayoshi-meter {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(255,255,255,0.9); padding: 5px 10px;
+            border-radius: 15px; border: 3px solid var(--wood-dark);
+            font-size: 16px; font-weight: bold; color: var(--wood-dark);
+            z-index: 40; display: flex; align-items: center; gap: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* 絵のエリア */
+        .picture-area {
+            flex: 1; background: var(--paper);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 80px; position: relative;
+            border-bottom: 4px solid var(--wood-dark);
+            transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+            cursor: pointer;
+        }
+        .tap-hint { animation: pulseHint 1.5s infinite; }
+        @keyframes pulseHint { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+
+        /* 💭 こころの声フキダシ */
+        .thought-bubble {
+            position: absolute; top: 8%; left: 50%; transform: translateX(-50%) scale(0);
+            background: white; border: 4px solid var(--blue); border-radius: 20px;
+            padding: 8px 14px; font-size: 16px; font-weight: bold; color: #333;
+            opacity: 0; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 30; white-space: nowrap;
+        }
+        .thought-bubble::after {
+            content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+            border-width: 12px 12px 0; border-style: solid;
+            border-color: var(--blue) transparent transparent transparent;
+        }
+        .show-thought { transform: translateX(-50%) scale(1); opacity: 1; }
+
+        /* テキストエリア */
+        .text-area {
+            height: 35%; background: white;
+            padding: 12px; font-size: 17px; font-weight: 700;
+            line-height: 1.4; display: flex; align-items: center; justify-content: center;
+            text-align: center; color: #333; box-sizing: border-box;
+        }
+
+        /* やりなおし・クリア画面 */
+        .feedback-overlay {
+            position: absolute; top:0; left:0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.96); z-index: 100;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 20px; box-sizing: border-box;
+        }
+        .feedback-overlay h2 { font-size: 24px; margin: 0 0 10px 0; font-weight: 900; }
+        .feedback-overlay p { font-weight: bold; line-height: 1.5; color: #555; margin: 0 0 20px 0; }
+
+        /* 特大えらぶボタン */
+        .words-controls { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+        .btn-choice-style { background: #fff; border: 4px solid var(--blue) !important; color: var(--blue) !important; box-shadow: 0 6px 0 var(--blue) !important; }
+        .btn-choice-style.btn-bad-style { border-color: #ff5252 !important; color: #ff5252 !important; box-shadow: 0 6px 0 #ff5252 !important; }
+
+        /* スクロール対応のおはなしリスト */
+        .book-list {
+            width: 100%; display: flex; flex-direction: column; gap: 10px;
+            max-height: 50vh; overflow-y: auto; padding: 10px;
+            border: 2px dashed #79553D; border-radius: 20px; background: rgba(255,255,255,0.6);
+            box-sizing: border-box;
+        }
+
+        #confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; display: none; }
+        .confetti-piece { position: absolute; font-size: 30px; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+    </style>
+</head>
+<body>
+
+<div id="confetti"></div>
+
+<div class="game-container">
+    
+    <!-- おはなしセレクトメニュー -->
+    <div id="words-menu-screen" class="screen active">
+        <div class="nav-area">
+            <a href="index.html" class="nintendo-back-btn">🏠 ホーム画面にもどる</a>
+        </div>
+        <div class="nintendo-quiz-box">
+            <h2 class="game-title" style="color:#000; text-align:center; margin-bottom:5px;">📖 ごめんね えほん</h2>
+            <p style="text-align:center; font-weight:bold; color:#666; margin-bottom:15px; font-size:14px;">どんなときに、なんて言う？えらんで進もう！</p>
+            
+            <div class="book-list">
+                <button class="stage-select-card" onclick="startWordsLesson('lesson1')">
+                    <span style="font-size: 2.2rem; margin-right: 12px;">🦊🗣️</span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">第1話「まわりにつられて悪口」</span><span id="words-badge-lesson1" class="clear-status-text">🌟 みくりあ</span></span>
+                </button>
+                <button class="stage-select-card" onclick="startWordsLesson('lesson2')">
+                    <span style="font-size: 2.2rem; margin-right: 12px;">🎨😢</span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">第2話「じょうだんのつもりが…」</span><span id="words-badge-lesson2" class="clear-status-text">🌟 みくりあ</span></span>
+                </button>
+                <button class="stage-select-card" onclick="startWordsLesson('lesson3')">
+                    <span style="font-size: 2.2rem; margin-right: 12px;">🧹⚡</span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">第3話「アドバイスでおこらせた Ups」</span><span id="words-badge-lesson3" class="clear-status-text">🌟 みくりあ</span></span>
+                </button>
+                <button class="stage-select-card" onclick="startWordsLesson('lesson4')">
+                    <span style="font-size: 2.2rem; margin-right: 12px;">🤝💥</span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">第4話「いらいらして、たたいた」</span><span id="words-badge-lesson4" class="clear-status-text">🌟 みくりあ</span></span>
+                </button>
+                <button class="stage-select-card" onclick="startWordsLesson('lesson5')">
+                    <span style="font-size: 2.2rem; margin-right: 12px;">🚗😭</span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">第5話「おもちゃとっちゃった」</span><span id="words-badge-lesson5" class="clear-status-text">🌟 みくりあ</span></span>
+                </button>
+                <button class="stage-select-card" onclick="startWordsLesson('lesson6')">
+                    <span style="font-size: 2.2rem; margin-right: 12px;">🏃🤕</span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">第6話「ぶつかっちゃった！」</span><span id="words-badge-lesson6" class="clear-status-text">🌟 みくりa</span></span>
+                </button>
+                <button class="stage-select-card" onclick="startWordsLesson('lesson7')">
+                    <span style="font-size: 2.2rem; margin-right: 12px;">🥛💦</span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">第7話「コップをわっちゃった」</span><span id="words-badge-lesson7" class="clear-status-text">🌟 みくりあ</span></span>
+                </button>
+                <button class="stage-select-card" onclick="startWordsLesson('lesson8')">
+                    <span style="font-size: 2.2rem; margin-right: 12px;">🗯️💔</span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">第8話「きらい！って言っちゃった」</span><span id="words-badge-lesson8" class="clear-status-text">🌟 みくりあ</span></span>
+                </button>
+                <button class="stage-select-card" onclick="startWordsLesson('lesson9')">
+                    <span style="font-size: 2.2rem; margin-right: 12px;">😂🩹</span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">第9話「ころんだのをわらった」</span><span id="words-badge-lesson9" class="clear-status-text">🌟 みくりあ</span></span>
+                </button>
+                <button class="stage-select-card" onclick="startWordsLesson('lesson10')">
+                    <span style="font-size: 2.2rem; margin-right: 12px;">🧢🔍</span>
+                    <span class="stage-select-text-block"><span class="stage-select-main-title">第10話「ぼうしをかくした」</span><span id="words-badge-lesson10" class="clear-status-text">🌟 みくりあ</span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 紙芝居舞台画面 -->
+    <div id="words-play-screen" class="screen">
+        <div class="kamishibai-stage" id="stage">
+            <div class="curtain left"></div>
+            <div class="curtain right"></div>
+
+            <div class="nakayoshi-meter" id="meter">きずな：💛💛</div>
+
+            <div class="picture-area tap-hint" id="picture-area" onclick="showThought()">
+                <div class="thought-bubble" id="thought">こころの声</div>
+                <span id="pic-emoji"></span>
+            </div>
+            
+            <div class="text-area" id="text-area"></div>
+
+            <!-- バッドエンド画面 -->
+            <div id="bad-end-overlay" class="feedback-overlay">
+                <h2 style="color: #ff5252;">ざんねん...💦</h2>
+                <p id="bad-reason">りゆう</p>
+                <button class="nintendo-action-btn reset-action" onclick="restartLesson()">もういちど ひきなおす 🔄</button>
+            </div>
+
+            <!-- ハッピーエンド画面 -->
+            <div id="happy-end-overlay" class="feedback-overlay">
+                <h2 style="color: #2ed573;">なかよし！✨</h2>
+                <p>じょうずに 「ごめんね」や<br>ただしい行動が えらべたね！えらい！</p>
+                <button class="nintendo-action-btn next-action" onclick="backToWordsMenu()">えほんを とじる 🗺️</button>
+            </div>
+        </div>
+
+        <div class="words-controls" id="controls"></div>
+    </div>
+
+</div>
+
+<script>
+    const LESSONS = {
+        lesson1: {
+            1: { pic: "🦊👉🐢", text: "きつねくんたちが、かめのくんの のろまなところを「おそーい！」と笑っています。", thought: "みんなで笑うとおもしろいなぁ", next: 2 },
+            2: { pic: "👦⚡🦊", text: "きつねくんに「お前もいっしょに言おうぜ！」と誘われました。断ると仲間外れにされるかも…", thought: "どうしよう、あわせたほうがいい？", next: 3 },
+            3: { pic: "🐢😭", text: "かめのくんは泣きそうな顔で下を向いています。あなたはどうする？", thought: "ボク、なにも悪いことしてないのに…", 
+                choices: [
+                    { text: "👉 きつねくんにあわせて「本当におそい！」と言う", next: "bad1", type: "bad" },
+                    { text: "👉 笑うのをやめて「そんなこと言うのやめなよ」と言う", next: 4, type: "good" }
+                ] 
+            },
+            bad1: { reason: "まわりがつられて言っていても、悪口は言われた相手を深く傷つけるよ。一緒になっていじめるのは絶対にバツ！" },
+            4: { pic: "👦🙇‍♂️🐢", text: "「さっきは一緒になって笑っちゃってごめんね。ボクはそんなこと思ってないよ」", thought: "勇気を出してかばってくれて、うれしい！", next: 5 },
+            5: { pic: "🐢✨", text: "かめのくんのきずなが深まり、ふたりは本当のなかよしになりました！", thought: "ボクたちのペースで歩こう！", next: "clear" }
+        },
+
+        lesson2: {
+            1: { pic: "🎨😊", text: "おともだちが、たのしそうに え を かいて います。", thought: "じょうずに かけたぞ！", next: 2 },
+            2: { pic: "👦🗯️", text: "おもしろいな！とおモって、にこにこしながら「へんなえ！」と言いました。", thought: "えっ… へんなえ なの…？", next: 3 },
+            3: { pic: "🎨😭", text: "あっ！ おともだち が ないちゃいました。どうする？", thought: "そんなこと 言わないでよぅ", 
+                choices: [
+                    { text: "👉「おもしろい えだね！」と言いなおす", next: 4, type: "good" },
+                    { text: "🏃 だまって にげちゃう", next: "bad1", type: "bad" }
+                ] 
+            },
+            bad1: { reason: "にげちゃうのは ダメ！「へんなえ」は あいてのこころを チクチクさす言葉んだ。すぐに 言いなおそう。" },
+            4: { pic: "👦🤝🎨", text: "「へんな言いかたして ごめんね。おもしろくて すてきな えだね！」", thought: "びっくりしたけど、ありがとう！", next: 5 },
+            5: { pic: "🎨✨", text: "おともだち も、にこにこ えがお に なってくれました！", thought: "いっしょに おえかき しよう！", next: "clear" }
+        },
+
+        lesson3: {
+            1: { pic: "🧹🐼", text: "パンダくん が、いっしょうけんめい おそうじ を して います。", thought: "キレイに するぞ〜！", next: 2 },
+            2: { pic: "👦👉", text: "床にゴミがのこっています。親切のつもりで「へたくそ！ゴミあるじゃん！」と言いました。", thought: "せっかく やってるのに…", next: 3 },
+            3: { pic: "🐼😠", text: "パンダくん が ぷんぷん おこっちゃいました。どうする？", thought: "もう おそうじ なんて しない！",
+                choices: [
+                    { text: "😠 「おこるなよ！」と さらに怒る", next: "bad1", type: "bad" },
+                    { text: "👉 「いっしょに やろう！」と声をかける", next: 4, type: "good" }
+                ]
+            },
+            bad1: { reason: "いっしょにおこったら 大げんかになっちゃうよ。「へたくそ」と言われると 相手はチクチクしちゃうんだ。" },
+            4: { pic: "👦🧹🐼", text: "「きつい言いかたして ごめんね。いっしょに はこう！」\nふわふわことばで 誘えました！", thought: "手つだってくれるの？ うれしいな！", next: 5 },
+            5: { pic: "🐼✨", text: "ふたりで お部屋を ピカピカ に できました！", thought: "いっしょに やると はやいね！", next: "clear" }
+        },
+
+        lesson4: {
+            1: { pic: "👦🧱", text: "つみき が うまく できなくて、頭の中が イライラ して います。", thought: "もう！ できない！キーッ！", next: 2 },
+            2: { pic: "🐵❓", text: "おさるさん が「どうしたの？」と やさしくきいてくれましたが、イライラをぶつけて叩いてしまいました。", thought: "なにも してないのに いたいよぅ…", next: 3 },
+            3: { pic: "🐵😭", text: "おさるさんが泣いています。どうする？", thought: "てつだおうと思っただけなのに",
+                choices: [
+                    { text: "👉 「つみきができないのが悪い！」とおこる", next: "bad1", type: "bad" },
+                    { text: "👉 「たたいてごめんね」とあやまる", next: 4, type: "good" }
+                ]
+            },
+            bad1: { reason: "八つ当たり（やつあたり）で手を出すのは絶対にダメ！イライラした理由は叩いていい理由にはならないよ。" },
+            4: { pic: "👦🙇‍♂️🐵", text: "「たたいてごめんなさい。つみきができなくてイライラしてたの…」と言葉で伝えられました。", thought: "そうだったんだね。いっしょに作ろう！", next: 5 },
+            5: { pic: "🐵😊", text: "おさるさんも許してくれて、一緒に大きなお城を完成させました！", thought: "言葉でおしえてくれてありがとう", next: "clear" }
+        },
+
+        lesson5: {
+            1: { pic: "🐻🚗", text: "くまくんが、くるまのおもちゃで楽しそうにあそんでいます。", thought: "たのしいなぁ！", next: 2 },
+            2: { pic: "👦💨", text: "「かして！」と言いながら、むりやり手から奪い取ってしまいました。", thought: "あ！ ぼくの くるま！", next: 3 },
+            3: { pic: "🐻😭", text: "くまくんが泣き出してしまいました。どうする？", thought: "かえしてよぅ",
+                choices: [
+                    { text: "👉 くるまを返してあやまる", next: 4, type: "good" },
+                    { text: "🏃 おもちゃを持ったままにげる", next: "bad1", type: "bad" }
+                ]
+            },
+            bad1: { reason: "逃げちゃダメ！くまくんはずっと悲しいままだよ。おもちゃを返してしっかりあやまろう。" },
+            4: { pic: "👦🙇‍♂️", text: "「とってごめんね。順番であそぼう」と自分でしっかり言えました！", thought: "あやまってくれてうれしいな", next: 5 },
+            5: { pic: "🐻😊", text: "「いいよ！つぎはかしてあげるね」とくまくんも笑顔になりました。", thought: "なかよくあそぼうね", next: "clear" }
+        },
+
+        lesson6: {
+            1: { pic: "👦💨🐰", text: "走っていたら、うさぎちゃんにドドン！とぶつかっちゃった！", thought: "わっ！ あぶない！", next: 2 },
+            2: { pic: "🐰😭", text: "うさぎちゃんは転んで泣いています。どうする？", thought: "いたかったよぉ…",
+                choices: [
+                    { text: "👉 「だいじょうぶ？」と声をかけてあやまる", next: 3, type: "good" },
+                    { text: "😠 「じゃまだ！」とおこる", next: "bad1", type: "bad" }
+                ]
+            },
+            bad1: { reason: "逆におこったらもっと大喧嘩になっちゃうよ。ぶつかったらまずは心配して謝ろう。" },
+            3: { pic: "👦🤝🐰", text: "「ぶつかってごめんね。ケガはない？」と優しく手を引いてあげました。", thought: "やさしくしてくれてありがとう", next: 4 },
+            4: { pic: "🐰✨", text: "「だいじょうぶだよ。ありがとう！」と元気になってくれました。", thought: "もういたくないよ！", next: "clear" }
+        },
+
+        lesson7: {
+            1: { pic: "💥🥛", text: "手がすべって、おかあさんの大切なコップをガシャンと割ってしまいました！", thought: "やばい！どうしよう！", next: 2 },
+            2: { pic: "👩❓", text: "「なんの音？」とおかあさんがやってきました。怒られるのが怖いです。どうする？", thought: "なにか割れたかしら？",
+                choices: [
+                    { text: "👉 「ボクはしらない！」と言いわけする", next: "bad1", type: "bad" },
+                    { text: "👉 「ごめんなさい、わっちゃった」と正直に言う", next: 3, type: "good" }
+                ]
+            },
+            bad1: { reason: "ウソをついても隠し事はいつかバレちゃうし、あとからもっと怒られちゃうよ。正直に言おう。" },
+            3: { pic: "👦🙇‍♂️", text: "「さわってたら落としちゃったの、ごめんなさい」と正直に謝れました。", thought: "ほんとうのことが言えたよ", next: 4 },
+            4: { pic: "👩✨", text: "「正直に教えてくれてありがとう。ケガがなくてよかったわ」と許してくれました。", thought: "隠さずに言えてえらいわ", next: "clear" }
+        },
+
+        lesson8: {
+            1: { pic: "👦⚡🐱", text: "ねこちゃんと口喧嘩になって、ついカッとなってしまいました。", thought: "プンプン！もうしらない！", next: 2 },
+            2: { pic: "👦🗯️", text: "「ねこちゃん大嫌い！あっちいけ！」とひどい暴言を言ってしまいました。", thought: "いじわる言ってやる！", next: 3 },
+            3: { pic: "🐱😢", text: "ねこちゃんは今にも泣きそうな顔をしています。どうする？", thought: "きらいって言われて悲しい…",
+                choices: [
+                    { text: "👉 「まだ大嫌いだもん！」と言い張る", next: "bad1", type: "bad" },
+                    { text: "👉 「ひどいこと言ってごめんね」と謝る", next: 4, type: "good" }
+                ]
+            },
+            bad1: { reason: "怒っていても「きらい」「あっちいけ」は相手の心を深く傷つけるよ。素直にあやまろう。" },
+            4: { pic: "👦🙇‍♂️", text: "「本当はきらいじゃないよ。ひどいこと言ってごめんね」と素直になれました。", thought: "怒ってごめんね", next: 5 },
+            5: { pic: "🐱✨", text: "「わたしもごめんね。また仲良くしよう！」と仲直りできました。", thought: "よかった、嫌われてなかった", next: "clear" }
+        },
+
+        lesson9: {
+            1: { pic: "🐶💦", text: "いぬくんが派手にドテッ！と転んでしまいました。", thought: "いたたたた…", next: 2 },
+            2: { pic: "👦😂", text: "転び方がおもしろくて、つい「あははは！」と大声で笑ってしまいました。", thought: "おもしろいころびかた！", next: 3 },
+            3: { pic: "🐶😭", text: "いぬくんは泣いてしまいました。どうする？", thought: "痛いのに笑わないでよ…",
+                choices: [
+                    { text: "👉 「だって本当におかしかったんだもん」と言う", next: "bad1", type: "bad" },
+                    { text: "👉 「笑ってごめんね。だいじょうぶ？」ときく", next: 4, type: "good" }
+                ]
+            },
+            bad1: { reason: "自分が痛くて悲しいときに笑われたら嫌だよね。相手の立場になって気持ちを考えよう。" },
+            4: { pic: "👦🤝", text: "「笑っちゃって悪かったよ。痛かったよね、大丈夫？」と声をかけてあげました。", thought: "心配してくれてありがとう", next: 5 },
+            5: { pic: "🐶✨", text: "「びっくりしたけど大丈夫だよ、ありがとう！」と笑顔に戻りました。", thought: "たすけてくれてうれしいな", next: "clear" }
+        },
+
+        lesson10: {
+            1: { pic: "👦🧢", text: "いたずら半分で、こっそりうさぎちゃんの帽子を隠してしまいました。", thought: "いたずらしちゃおっと", next: 2 },
+            2: { pic: "🐰🔍", text: "うさぎちゃんは帽子がなくて、困って必死に探しています。", thought: "どこにいっちゃったの？", next: 3 },
+            3: { pic: "🐰😭", text: "うさぎちゃんが泣き出してしまいました。どうする？", thought: "お気に入りの帽子なのに…",
+                choices: [
+                    { text: "👉 帽子をだして「隠してごめんね」と言う", next: 4, type: "good" },
+                    { text: "🤫 バレるのが怖いからしらないふりをする", next: "bad1", type: "bad" }
+                ]
+            },
+            bad1: { reason: "冗談のつもりでも、相手が泣くほど困っていたらやりすぎ！すぐに返してあやまろう。" },
+            4: { pic: "👦🙇‍♂️", text: "「意地悪してごめんなさい、ここに隠してたの」と帽子を返せました。", thought: "帽子あった！よかった！", next: 5 },
+            5: { pic: "🐰😊", text: "「見つかってよかった。もう隠さないでね！」と許してくれました。", thought: "ちゃんと返してくれてありがとう", next: "clear" }
+        }
+    };
+
+    let currentLessonData = null;
+    let currentLessonId = "";
+    let currentPageId = 1;
+    let heartCount = 2;
+
+    function updateMeter() {
+        let hearts = "きずな：";
+        for(let i=0; i<3; i++) hearts += (i < heartCount) ? "💛" : "🖤";
+        document.getElementById('meter').innerText = hearts;
+    }
+
+    function startWordsLesson(lessonId) {
+        currentLessonId = lessonId;
+        currentLessonData = LESSONS[lessonId];
+        currentPageId = 1;
+        heartCount = 2; 
+        
+        document.getElementById('words-menu-screen').classList.remove('active');
+        document.getElementById('words-play-screen').classList.add('active');
+        document.getElementById('bad-end-overlay').style.display = "none";
+        document.getElementById('happy-end-overlay').style.display = "none";
+        
+        const stage = document.getElementById('stage');
+        stage.classList.remove('curtain-open');
+        updateMeter();
+
+        setTimeout(() => {
+            stage.classList.add('curtain-open');
+            renderPage();
+        }, 500);
+    }
+
+    function renderPage() {
+        const page = currentLessonData[currentPageId];
+        
+        document.getElementById('thought').classList.remove('show-thought');
+        if(page.thought) document.getElementById('thought').innerText = page.thought;
+
+        const picArea = document.getElementById('picture-area');
+        picArea.style.opacity = 0;
+        picArea.style.transform = "translateX(20px)";
+        
+        setTimeout(() => {
+            document.getElementById('pic-emoji').innerText = page.pic;
+            document.getElementById('text-area').innerText = page.text;
+            picArea.style.opacity = 1;
+            picArea.style.transform = "translateX(0)";
+        }, 200);
+
+        const controls = document.getElementById('controls');
+        controls.innerHTML = "";
+
+        if (page.choices) {
+            picArea.classList.add('tap-hint');
+            page.choices.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = c.type === "good" ? "nintendo-action-btn next-action btn-choice-style" : "nintendo-action-btn reset-action btn-choice-style btn-bad-style";
+                btn.innerText = c.text;
+                btn.onclick = () => {
+                    if(c.type === "good") { heartCount = 3; updateMeter(); }
+                    else { heartCount = 1; updateMeter(); }
+                    goToNext(c.next);
+                };
+                controls.appendChild(btn);
+            });
+        } else {
+            picArea.classList.remove('tap-hint');
+            const btn = document.createElement('button');
+            btn.className = "nintendo-action-btn next-action";
+            btn.innerText = "つぎへ すすむ ➡️";
+            btn.onclick = () => goToNext(page.next);
+            controls.appendChild(btn);
+        }
+    }
+
+    function showThought() {
+        const thought = document.getElementById('thought');
+        thought.classList.add('show-thought');
+        setTimeout(() => { thought.classList.remove('show-thought'); }, 2500);
+    }
+
+    function goToNext(nextId) {
+        if (nextId === "clear") {
+            showClear();
+        } else if (String(nextId).startsWith("bad")) {
+            showBadEnd(currentLessonData[nextId].reason);
+        } else {
+            currentPageId = nextId;
+            renderPage();
+        }
+    }
+
+    function showBadEnd(reasonText) {
+        document.getElementById('bad-reason').innerText = reasonText;
+        document.getElementById('bad-end-overlay').style.display = "flex";
+        document.getElementById('controls').innerHTML = "";
+    }
+
+    function restartLesson() {
+        document.getElementById('bad-end-overlay').style.display = "none";
+        heartCount = 2; updateMeter();
+        currentPageId = 1;
+        renderPage();
+    }
+
+    function showClear() {
+        document.getElementById('happy-end-overlay').style.display = "flex";
+        document.getElementById('controls').innerHTML = "";
+        
+        var currentCoins = parseInt(localStorage.getItem('game_coins') || 0);
+        localStorage.setItem('game_coins', currentCoins + 15);
+        
+        localStorage.setItem('words_clear_' + currentLessonId, 'true');
+        fireConfetti();
+    }
+
+    function backToWordsMenu() {
+        document.getElementById('confetti').style.display = "none";
+        document.getElementById('confetti').innerHTML = "";
+        document.getElementById('words-play-screen').classList.remove('active');
+        document.getElementById('words-menu-screen').classList.add('active');
+        updateWordsBadges();
+    }
+
+    function updateWordsBadges() {
+        for (let i = 1; i <= 10; i++) {
+            var isCleared = localStorage.getItem('words_clear_lesson' + i);
+            var badge = document.getElementById('words-badge-lesson' + i);
+            if (badge) {
+                if (isCleared === 'true') {
+                    badge.innerText = "👑 クリア！";
+                    badge.style.color = "#ffa502";
+                } else {
+                    badge.innerText = "🌟 みくりあ";
+                    badge.style.color = "#718093";
+                }
+            }
+        }
+    }
+
+    function fireConfetti() {
+        const container = document.getElementById('confetti');
+        container.style.display = "block";
+        const emojis = ["🎉", "✨", "🌸", "🌟", "💖"];
+        for (let i = 0; i < 40; i++) {
+            const conf = document.createElement('div');
+            conf.className = 'confetti-piece';
+            conf.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            conf.style.left = Math.random() * 100 + 'vw';
+            conf.style.top = -50 + 'px';
+            conf.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            conf.style.animationDelay = (Math.random() * 0.5) + 's';
+            container.appendChild(conf);
+        }
+    }
+
+    updateWordsBadges();
+</script>
+</body>
+</html>
